@@ -1,42 +1,81 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+.back{
+  background-color: #F5F7FA;
+  color: #333333;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.input-task {
+  border: solid 1px #29B6F6;
+  border-radius: 4px;
+  background-color: white;
+  position: relative;
+  cursor: pointer;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
+.input-task:checked {
+  background-color: #29B6F6;
+  border-color: #29B6F6;
+}
+
+.input-task::after {
+  content: '\2713';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -60%) scale(0);
+  font-size: 18px;
+  color: white;
+  opacity: 0;
+  pointer-events: none;
+  transition: none;
+}
+
+.input-task:checked::after {
+  animation: makedone 1s ease forwards;
+}
+
+.expanse{
+  animation: expanse 1s ease-in-out;
+}
+
+@keyframes expanse {
+  0%{padding: 20px;}
+  50%{padding: 25px;}
+  100%{padding: 20px;}
+}
+
+@keyframes makedone {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%) scale(0.2);
   }
-  to {
-    transform: rotate(360deg);
+  60% {
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1.2);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -60%) scale(1);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.strike-event {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
 }
 
-.card {
-  padding: 2em;
+.strike-event::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  height: 2px;
+  width: 0;
+  background: #757575;
+  transform: translateY(-50%);
+  transition: width 0.5s ease;
 }
 
-.read-the-docs {
-  color: #888;
+.strike-event.struck::after {
+  width: 100%;
 }
