@@ -56,6 +56,13 @@
   animation-delay: 0s, 1s;
 }
 
+.showup {
+  overflow: hidden;
+  animation: reduce 1s ease reverse forwards, del 1s ease reverse forwards;
+  animation-delay: 0s, 1s;
+}
+
+
 
 @keyframes expanse {
   0%{padding: 20px;}

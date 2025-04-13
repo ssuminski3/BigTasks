@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import "../App.css";
 import BigTaskComponent from '../components/BigTaskComponent';
+import SprintComponent from '../components/SprintComponent';
 
 // Define a TypeScript interface for a task.
 interface BigTask {
@@ -14,7 +15,7 @@ interface BigTask {
 
 // Initial list of tasks.
 const initialBigTasks: BigTask[] = [
-  { done: false, name: "SIEMA1", taskToDo: 120, donesTasks: 33, key_my: 1 },
+  { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, key_my: 1 },
   { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, key_my: 2 },
   { done: false, name: "SIEMA3", taskToDo: 120, donesTasks: 33, key_my: 3 },
   { done: false, name: "SIEMA4", taskToDo: 120, donesTasks: 33, key_my: 4 },
@@ -31,24 +32,71 @@ const initialBigTasks: BigTask[] = [
   { done: false, name: "SIEMA14", taskToDo: 120, donesTasks: 33, key_my: 15 },
   { done: false, name: "SIEMA16", taskToDo: 120, donesTasks: 33, key_my: 16 },
 ];
+type Sprint = {
+  name: string,
+  key_my: number,
+}
+const sprintes: Sprint[] = [
+  { name: "Sprint Alpha", key_my: 1 },
+  { name: "Sprint Beta", key_my: 2 },
+  { name: "Sprint Gamma", key_my: 3 },
+  { name: "Sprint Delta", key_my: 4 },
+  { name: "Sprint Epsilon", key_my: 5 },
+  { name: "Sprint Alpha", key_my: 1 },
+  { name: "Sprint Beta", key_my: 2 },
+  { name: "Sprint Gamma", key_my: 3 },
+  { name: "Sprint Delta", key_my: 4 },
+  { name: "Sprint Epsilon", key_my: 5 },
+];
+
 
 function MainPage() {
   // Set up state for managing tasks.
-  const [tasks, setTasks] = useState<BigTask[]>(initialBigTasks);
+  const [tasks, setTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === false));
+  const [sprints, setSprints] = useState<Sprint[]>(sprintes)
+  const [doneTasks, setDoneTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === true))
 
   // Remove a task based on its key.
-  function remove(key: number, ) {
+  function removeBigTaks(key: number,) {
     console.log("Before removal:", tasks.length);
     const updatedTasks = tasks.filter(task => task.key_my !== key);
     setTasks(updatedTasks);
     console.log("After removal:", updatedTasks.length);
   }
 
+  function removeDoneBigTaks(key: number,) {
+    console.log("Before removal:", doneTasks.length);
+    const updatedTasks = doneTasks.filter(task => task.key_my !== key);
+    setDoneTasks(updatedTasks);
+    console.log("After removal:", updatedTasks.length);
+  }
+
+  function removeSprint(key: number) {
+    console.log("Before removal:", tasks.length);
+    const updatedSprints = sprints.filter(sprint => sprint.key_my !== key);
+    setSprints(updatedSprints);
+    console.log("After removal:", updatedSprints.length);
+  }
+
+  const toggleDone = (key: number) => {
+    setTasks(prevTasks => {
+      const taskToMove = prevTasks.find(task => task.key_my === key);
+      if (!taskToMove) return prevTasks; // safety check
+
+      // Move to doneTasks with 'done: true'
+      setDoneTasks(prevDone => [...prevDone, { ...taskToMove, done: true }]);
+      console.log("DONE")
+      // Filter it out from tasks
+      return prevTasks.filter(task => task.key_my !== key);
+    });
+  };
+
+
   return (
     <>
-      <div className="sm:flex h-screen m-auto">
+      <div className="md:flex h-screen m-auto back">
         {/* Left Sidebar - Big Tasks */}
-        <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 sm:w-1/4 flex-none">
+        <div style={{ backgroundColor: '#EBF0F7' }} className="md:m-5 md:p-5 md:w-1/4 flex-none">
           <p className="font-bold text-3xl m-5">Big Tasks</p>
           <div className="overflow-y-scroll h-11/12 m-auto">
             {tasks.map((task) => (
@@ -59,7 +107,8 @@ function MainPage() {
                 taskToDo={task.taskToDo}
                 donesTasks={task.donesTasks}
                 key_my={task.key_my}
-                dl={remove}
+                dl={removeBigTaks}
+                dof={() => toggleDone(task.key_my)}
               />
             ))}
           </div>
@@ -67,16 +116,39 @@ function MainPage() {
 
         {/* Central Area - Sprints */}
         <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 flex-1">
-          <p className="font-bold text-3xl">Sprints</p>
+          <p className="font-bold text-3xl m-5">Sprints</p>
+          <div className="overflow-y-scroll h-11/12 m-auto">
+            {sprints.map((sprint) => (
+              <SprintComponent
+                name={sprint.name}
+                key_my={sprint.key_my}
+                dl={removeSprint}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Right Sidebar - Finished Tasks */}
-        <div className="m-5 sm:w-1/4 flex flex-col space-y-5">
+        <div className="m-5 :w-1/4 flex flex-col space-y-5">
           <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1">
-            <p className="font-bold text-3xl">Finished Big Tasks</p>
+            <p className="font-bold text-3xl m-5">Finished Big Tasks</p>
+            <div className="overflow-y-scroll h-11/12 m-auto">
+              {doneTasks.map((task) => (
+                <BigTaskComponent
+                  key={task.key_my}
+                  name={task.name}
+                  done={task.done}
+                  taskToDo={task.taskToDo}
+                  donesTasks={task.donesTasks}
+                  key_my={task.key_my}
+                  dl={removeDoneBigTaks}
+                  dof={() => toggleDone(task.key_my)}
+                />
+              ))}
+            </div>
           </div>
           <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1">
-            <p className="font-bold text-3xl">Finished Sprints</p>
+            <p className="font-bold text-3xl m-5">Finished Sprints</p>
           </div>
         </div>
       </div>

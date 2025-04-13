@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
@@ -28,8 +28,13 @@ function TaskComponent(props: Task) {
   function onChecked() {
     setDone(!done)
     div.current?.classList.add("expanse")
-    setTimeout(() => div.current?.classList.remove("expanse"), 1000)
-    props.dof?.()
+    setTimeout(() => {
+      div.current?.classList.add("delete")
+      setTimeout(() => {
+        div.current?.classList.remove("delete"); props.dof?.()
+      }, 2000)
+      div.current?.classList.remove("expanse")
+    }, 1000)
     if (!done) {
       setDoneName('')
       animateText()
@@ -61,9 +66,14 @@ function TaskComponent(props: Task) {
   function onDelete() {
     if (confirm("Do you want to delete task ?")) {
       div.current?.classList.add("delete")
-      setTimeout(() => {div.current?.classList.remove("delete"); props.dl(props.key_my)}, 2000)
+      setTimeout(() => { div.current?.classList.remove("delete"); props.dl(props.key_my) }, 2000)
     }
   }
+
+  useEffect(() => {
+    div.current?.classList.add("showup")
+    setTimeout(() => div.current?.classList.remove("showup"), 2000)
+  }, [])
   return (
     <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div}>
       <div className="flex">
@@ -77,9 +87,10 @@ function TaskComponent(props: Task) {
           {edit ? (
             <input
               defaultValue={name}
+              className='max-w-1/2'
               autoFocus={true}
               maxLength={15}
-              onChange={(e) => {setName(e.target.value); setDoneName(e.target.value)}}
+              onChange={(e) => { setName(e.target.value); setDoneName(e.target.value) }}
               // Optionally add a type and styling
               type="text"
             />
