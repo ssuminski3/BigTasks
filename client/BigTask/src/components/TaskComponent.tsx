@@ -11,7 +11,7 @@ type Task = {
   color?: string,
   inputClass?: string
   children?: React.ReactNode,
-  dl: (index: number) => void, //function on delete
+  dl?: (index: number) => void, //function on delete
   dof?: () => void, //function on done
 }
 
@@ -66,7 +66,7 @@ function TaskComponent(props: Task) {
   function onDelete() {
     if (confirm("Do you want to delete task ?")) {
       div.current?.classList.add("delete")
-      setTimeout(() => { div.current?.classList.remove("delete"); props.dl(props.key_my) }, 2000)
+      setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.key_my) }, 2000)
     }
   }
 
