@@ -6,8 +6,8 @@ type BigTask = {
   key_my: number;
   donesTasks: number;
   taskToDo: number;
-  dl: (index: number) => void,
-  dof: () => void
+  dl?: (index: number) => void,
+  dof?: () => void
 };
 
 function BigTaskComponent(props: BigTask) {
