@@ -56,7 +56,7 @@ function MainPage() {
   const [tasks, setTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === false));
   const [sprints, setSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === false))
   const [doneTasks, setDoneTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === true))
-  const [doneSprints, setDoneSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === true))
+  const [doneSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === true))
 
 
   // Remove a task based on its key.
