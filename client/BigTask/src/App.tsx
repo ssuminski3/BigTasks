@@ -18,7 +18,7 @@ export default function App() {
             <Route path="/createbigtask" element={<CreateBigTask />} />
             <Route path="/createsprint" element={<CreateSprint />} />
             <Route path="/showbigtask" element={<ShowBigTask />} />
-            <Route path="/Showsprint" element={<ShowSprint />} />
+            <Route path="/showsprint" element={<ShowSprint />} />
             <Route path="*" element={<NotFound />} />
         </Routes>
     )

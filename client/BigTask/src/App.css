@@ -3,17 +3,30 @@
   color: #333333;
 }
 
+.input-task-color{
+  border-color: #29B6F6;
+}
+
+.input-task-color:checked {
+  background-color: #29B6F6;
+  border-color: #29B6F6;
+}
+
+.input-bigtask-color{
+  border-color: #FF9800;
+}
+
+.input-bigtask-color:checked {
+  background-color: #FF9800;
+  border-color: #FF9800;
+}
+
 .input-task {
-  border: solid 1px #29B6F6;
+  border: solid 1px;
   border-radius: 4px;
   background-color: white;
   position: relative;
   cursor: pointer;
-}
-
-.input-task:checked {
-  background-color: #29B6F6;
-  border-color: #29B6F6;
 }
 
 .input-task::after {
@@ -37,6 +50,13 @@
   animation: expanse 1s ease-in-out;
 }
 
+.delete {
+  overflow: hidden;
+  animation: del 1s ease, reduce 1s ease forwards;
+  animation-delay: 0s, 1s;
+}
+
+
 @keyframes expanse {
   0%{padding: 20px;}
   50%{padding: 25px;}
@@ -58,24 +78,28 @@
   }
 }
 
-.strike-event {
-  position: relative;
-  display: inline-block;
-  cursor: pointer;
+@keyframes del {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
 }
-
-.strike-event::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 50%;
-  height: 2px;
-  width: 0;
-  background: #757575;
-  transform: translateY(-50%);
-  transition: width 0.5s ease;
-}
-
-.strike-event.struck::after {
-  width: 100%;
+@keyframes reduce {
+  0%{
+    max-height: 100px;
+    opacity: 0;
+    margin: auto;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  100% {
+    opacity: 0;
+    max-height: 0px;
+    margin: 0;
+    padding: 0;
+  }
 }
