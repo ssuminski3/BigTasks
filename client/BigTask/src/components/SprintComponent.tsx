@@ -6,6 +6,7 @@ import { BiTrash } from "react-icons/bi";
 type Sprint = {
     name: string,
     key_my: number,
+    done: boolean,
     dl: (index: number) => void
 }
 
@@ -38,7 +39,7 @@ function SprintComponent(props: Sprint) {
                         />
                     ) : (
                         <label>
-                            {name}
+                            {props.done ? <del>{name}</del> : name}
                         </label>
                     )}
 
