@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../App.css';
 import TimePanel from '../components/TimePanel';
 import TaskComponent from '../components/TaskComponent';
+import { useParams } from 'react-router-dom';
 
 type Task = {
     name: string;
@@ -13,7 +14,9 @@ type Task = {
 };
 
 function ShowSprint() {
-    const [sprintName] = useState("HELLO");
+    const params = useParams();
+
+    const [sprintName] = useState(params.id);
 
     const initialTasks: Task[] = [
         { name: "Write project proposal", done: false, key_my: 1 },

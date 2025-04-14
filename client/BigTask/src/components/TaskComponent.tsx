@@ -15,7 +15,7 @@ type Task = {
   children?: React.ReactNode,
   dl?: (index: number) => void, //function on delete
   dof?: () => void, //function on done
-  edit?: () => void
+  edit?: (e: React.MouseEvent) => void
 }
 
 function TaskComponent(props: Task) {
@@ -111,7 +111,7 @@ function TaskComponent(props: Task) {
           )}
 
         </div>
-        <div onClick={() => props.edit?.() || setEdit(!edit)} className="m-2">
+        <div onClick={(e: React.MouseEvent) => props.edit?.(e) || setEdit(!edit)} className="m-2">
           {edit ?
             <AiOutlineCheck color={props.color || '#29B6F6'} size={'22px'} /> :
             <BiPencil color={props.color || '#29B6F6'} size={'22px'} />
