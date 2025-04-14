@@ -1,9 +1,10 @@
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, Link } from 'react-router-dom';
 import "../App.css";
 import BigTaskComponent from '../components/BigTaskComponent';
 import SprintComponent from '../components/SprintComponent';
 import LogOut from '../components/LogOut';
+import { CiCirclePlus } from "react-icons/ci";
 
 // Define a TypeScript interface for a task.
 interface BigTask {
@@ -103,7 +104,12 @@ function MainPage() {
         <div className='md:flex h-[calc(100vh-80px)]'>
           {/* Left Sidebar - Big Tasks */}
           <div style={{ backgroundColor: '#EBF0F7' }} className="md:m-5 md:p-5 md:w-1/4 flex-none">
-            <p className="font-bold text-3xl m-5">Big Tasks</p>
+            <div className='flex w-full'>
+              <p className="font-bold text-3xl w-full m-5">Big Tasks</p>
+              <Link to={"/createbigtask"} className='items-end m-5'>
+                <CiCirclePlus color={'#3366CC'} size={'30px'} />
+              </Link>
+            </div>
             <div className="overflow-y-scroll h-11/12 m-auto">
               {tasks.map((task) => (
                 <BigTaskComponent
@@ -122,7 +128,12 @@ function MainPage() {
 
           {/* Central Area - Sprints */}
           <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 flex-1">
-            <p className="font-bold text-3xl m-5">Sprints</p>
+          <div className='flex w-full'>
+              <p className="font-bold text-3xl w-full m-5">Sprints</p>
+              <Link to={"/createsprint"} className='items-end m-5'>
+                <CiCirclePlus color={'#3366CC'} size={'30px'} />
+              </Link>
+            </div>
             <div className="overflow-y-scroll h-11/12 m-auto">
               {sprints.map((sprint) => (
                 <SprintComponent
