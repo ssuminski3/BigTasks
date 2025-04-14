@@ -6,7 +6,7 @@ export type Task = {
     inputClass?: string
     children?: React.ReactNode,
     dl?: (index: number) => void, //function on delete
-    dof?: () => void, //function on done
+    dof?: (index: number) => void, //function on done
     edit?: (e: React.MouseEvent) => void
 }
 
@@ -17,7 +17,7 @@ export type BigTask = {
     donesTasks: number;
     taskToDo: number;
     dl?: (index: number) => void,
-    dof?: () => void,
+    dof?: (index: number) => void,
 };
 
 export type Sprint = {

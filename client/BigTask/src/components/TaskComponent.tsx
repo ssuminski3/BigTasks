@@ -26,7 +26,7 @@ function TaskComponent(props: Task) {
     setTimeout(() => {
       div.current?.classList.add("delete")
       setTimeout(() => {
-        div.current?.classList.remove("delete"); props.dof?.()
+        div.current?.classList.remove("delete"); props.dof?.(props.key_my)
       }, 2000)
       div.current?.classList.remove("expanse")
     }, 1000)
