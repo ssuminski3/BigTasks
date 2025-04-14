@@ -3,6 +3,8 @@ import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
+import { callApi } from "../apiCalls";
+import { useAuth0 } from "@auth0/auth0-react";
 
 type Task = {
   name: string,
@@ -16,6 +18,9 @@ type Task = {
 }
 
 function TaskComponent(props: Task) {
+
+  const { getAccessTokenSilently } = useAuth0();
+
   const [done, setDone] = useState(props.done);
   // Start in view mode (not editing)
   const [edit, setEdit] = useState(false);
@@ -75,7 +80,7 @@ function TaskComponent(props: Task) {
     setTimeout(() => div.current?.classList.remove("showup"), 2000)
   }, [])
   return (
-    <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div}>
+    <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} onClick={async () => callApi(await getAccessTokenSilently())}>
       <div className="flex">
         <div className="w-full flex">
           <input

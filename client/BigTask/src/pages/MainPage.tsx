@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom';
 import "../App.css";
 import BigTaskComponent from '../components/BigTaskComponent';
 import SprintComponent from '../components/SprintComponent';
+import LogOut from '../components/LogOut';
 
 // Define a TypeScript interface for a task.
 interface BigTask {
@@ -97,47 +98,14 @@ function MainPage() {
 
   return (
     <>
-      <div className="md:flex h-screen m-auto back">
-        {/* Left Sidebar - Big Tasks */}
-        <div style={{ backgroundColor: '#EBF0F7' }} className="md:m-5 md:p-5 md:w-1/4 flex-none">
-          <p className="font-bold text-3xl m-5">Big Tasks</p>
-          <div className="overflow-y-scroll h-11/12 m-auto">
-            {tasks.map((task) => (
-              <BigTaskComponent
-                key={task.key_my}
-                name={task.name}
-                done={task.done}
-                taskToDo={task.taskToDo}
-                donesTasks={task.donesTasks}
-                key_my={task.key_my}
-                dl={removeBigTaks}
-                dof={() => toggleDone(task.key_my)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Central Area - Sprints */}
-        <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 flex-1">
-          <p className="font-bold text-3xl m-5">Sprints</p>
-          <div className="overflow-y-scroll h-11/12 m-auto">
-            {sprints.map((sprint) => (
-              <SprintComponent
-                name={sprint.name}
-                key_my={sprint.key_my}
-                dl={removeSprint}
-                done={sprint.done}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Right Sidebar - Finished Tasks */}
-        <div className="m-5 w-1/4 flex flex-col flex-none h-[calc(100vh-40px)] space-y-5">
-          <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1 overflow-hidden">
-            <p className="font-bold text-3xl m-5">Finished Big Tasks</p>
-            <div className="overflow-y-scroll h-full m-auto">
-              {doneTasks.map((task) => (
+      <div className="h-screen back">
+        <LogOut />
+        <div className='md:flex h-[calc(100vh-80px)]'>
+          {/* Left Sidebar - Big Tasks */}
+          <div style={{ backgroundColor: '#EBF0F7' }} className="md:m-5 md:p-5 md:w-1/4 flex-none">
+            <p className="font-bold text-3xl m-5">Big Tasks</p>
+            <div className="overflow-y-scroll h-11/12 m-auto">
+              {tasks.map((task) => (
                 <BigTaskComponent
                   key={task.key_my}
                   name={task.name}
@@ -145,17 +113,18 @@ function MainPage() {
                   taskToDo={task.taskToDo}
                   donesTasks={task.donesTasks}
                   key_my={task.key_my}
-                  dl={removeDoneBigTaks}
+                  dl={removeBigTaks}
                   dof={() => toggleDone(task.key_my)}
                 />
               ))}
             </div>
           </div>
 
-          <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1 overflow-hidden">
-            <p className="font-bold text-3xl m-5">Finished Sprints</p>
-            <div className="overflow-y-scroll h-full m-auto">
-              {doneSprints.map((sprint) => (
+          {/* Central Area - Sprints */}
+          <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 flex-1">
+            <p className="font-bold text-3xl m-5">Sprints</p>
+            <div className="overflow-y-scroll h-11/12 m-auto">
+              {sprints.map((sprint) => (
                 <SprintComponent
                   name={sprint.name}
                   key_my={sprint.key_my}
@@ -165,10 +134,44 @@ function MainPage() {
               ))}
             </div>
           </div>
+
+          {/* Right Sidebar - Finished Tasks */}
+          <div className="m-5 w-1/4 flex flex-col flex-none h-[calc(100vh-120px)] space-y-5">
+            <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1 overflow-hidden">
+              <p className="font-bold text-3xl m-5">Finished Big Tasks</p>
+              <div className="overflow-y-scroll h-full m-auto">
+                {doneTasks.map((task) => (
+                  <BigTaskComponent
+                    key={task.key_my}
+                    name={task.name}
+                    done={task.done}
+                    taskToDo={task.taskToDo}
+                    donesTasks={task.donesTasks}
+                    key_my={task.key_my}
+                    dl={removeDoneBigTaks}
+                    dof={() => toggleDone(task.key_my)}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1 overflow-hidden">
+              <p className="font-bold text-3xl m-5">Finished Sprints</p>
+              <div className="overflow-y-scroll h-full m-auto">
+                {doneSprints.map((sprint) => (
+                  <SprintComponent
+                    name={sprint.name}
+                    key_my={sprint.key_my}
+                    dl={removeSprint}
+                    done={sprint.done}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+
         </div>
-
       </div>
-
       {/* Render nested routes */}
       <Outlet />
     </>
