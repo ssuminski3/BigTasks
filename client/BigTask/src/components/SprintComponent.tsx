@@ -20,7 +20,8 @@ function SprintComponent(props: Sprint) {
         navigate(`/showsprint/${props.key_my}`)
     }
 
-    function onDelete() {
+    function onDelete(e: React.MouseEvent) {
+        e.stopPropagation()
         if (confirm("Do you want to delete sprint ?")) {
             div.current?.classList.add("delete")
             setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.key_my) }, 2000)

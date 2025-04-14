@@ -4,6 +4,7 @@ import TimePanel from '../components/TimePanel';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { Task } from '../lib/types';
+import TaskList from '../components/TaskList';
 
 function ShowSprint() {
     const params = useParams();
@@ -63,21 +64,8 @@ function ShowSprint() {
             </div>
 
             {/* Task list */}
-            <div
-                className='md:w-4/5 m-auto h-2/3 p-5 overflow-y-scroll'
-                style={{ backgroundColor: '#EBF0F7' }}
-            >
-                {tasks.map((item) => (
-                    <TaskComponent
-                        key={item.key_my}
-                        name={item.name}
-                        done={item.done}
-                        key_my={item.key_my}
-                        dl={remove}
-                        dof={() => toggleDone(item.key_my)}
-                    />
-                ))}
-            </div>
+            
+            <TaskList remove={remove} toggleDone={toggleDone} tasks={tasks} />
         </div>
     );
 }

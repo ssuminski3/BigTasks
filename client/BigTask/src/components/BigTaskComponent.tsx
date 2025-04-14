@@ -12,7 +12,8 @@ function BigTaskComponent(props: BigTask) {
     navigate(`/createbigtask/${props.key_my}`)
   }
 
-  const show = () => {
+  const show = (e: React.MouseEvent) => {
+    e.stopPropagation()
     navigate(`/showbigtask/${props.key_my}`)
 }
 

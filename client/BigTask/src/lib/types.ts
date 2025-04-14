@@ -26,3 +26,20 @@ export type Sprint = {
     done: boolean,
     dl?: (index: number) => void
 }
+
+export type BigTaskListType = {
+    removeBigTaks: (index: number) => void,
+    toggleDone: (index: number) => void,
+    tasks: BigTask[]
+}
+
+export type SprintListType = {
+    sprints: Sprint[];
+    removeSprint: (key: number) => void;
+}
+
+export type TaskListType = {
+    tasks: Task[],
+    remove: (index: number) => void,
+    toggleDone: (index: number) => void
+}

@@ -4,12 +4,10 @@ import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
 import { callApi } from "../lib/apiCalls";
-import { useAuth0 } from "@auth0/auth0-react";
 import { Task } from "../lib/types";
 
 function TaskComponent(props: Task) {
 
-  const { getAccessTokenSilently } = useAuth0();
 
   const [done, setDone] = useState(props.done);
   // Start in view mode (not editing)
@@ -58,7 +56,8 @@ function TaskComponent(props: Task) {
     }, 10)
   }
 
-  function onDelete() {
+  function onDelete(e: React.MouseEvent) {
+    e.stopPropagation()
     if (confirm("Do you want to delete task ?")) {
       div.current?.classList.add("delete")
       setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.key_my) }, 2000)
@@ -70,13 +69,14 @@ function TaskComponent(props: Task) {
     setTimeout(() => div.current?.classList.remove("showup"), 2000)
   }, [])
   return (
-    <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} onClick={async () => callApi(await getAccessTokenSilently())}>
+    <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} >
       <div className="flex">
         <div className="w-full flex">
           <input
             id={props.key_my.toString()}
             checked={done}
             onChange={onChecked}
+            onClick={(e) => e.stopPropagation()}
             type="checkbox"
             className={`appearance-none input-task ${props.inputClass || 'input-task-color'} w-5 h-5 text-center mr-3`} />
           {edit ? (
