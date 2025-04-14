@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import "../App.css"
 import TaskComponent from '../components/TaskComponent';
+import { useParams } from 'react-router-dom';
 
 type Task = {
   name: string;
@@ -13,7 +14,8 @@ const CreateBigTask = () => {
   const [inputValue, setInputValue] = useState('');
   const [taskMode, setTaskMode] = useState<'single' | 'multiple' | 'loop'>('single');
   const [loopCount, setLoopCount] = useState<number>(1);
-  const [editText, setEditText] = useState('');
+  const params = useParams();
+  const [editText, setEditText] = useState(params.id);
 
   const handleAddTask = () => {
     const trimmed = inputValue.trim();

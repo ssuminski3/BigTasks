@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { BiPencil } from "react-icons/bi";
-import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
+import { useNavigate } from 'react-router-dom';
 
 type Sprint = {
     name: string,
@@ -11,10 +11,13 @@ type Sprint = {
 }
 
 function SprintComponent(props: Sprint) {
-    const [edit, setEdit] = useState(false)
-    const [name, setName] = useState(props.name)
 
     const div = useRef<HTMLDivElement | null>(null);
+
+    const navigate = useNavigate();
+    const edit = () => {
+        navigate(`/createsprint/${props.key_my}`)
+    }
 
     function onDelete() {
         if (confirm("Do you want to delete sprint ?")) {
@@ -28,27 +31,15 @@ function SprintComponent(props: Sprint) {
             <div className="flex">
                 <div className="w-full flex">
 
-                    {edit ? (
-                        <input
-                            defaultValue={name}
-                            autoFocus={true}
-                            maxLength={15}
-                            onChange={(e) => setName(e.target.value)}
-                            // Optionally add a type and styling
-                            type="text"
-                        />
-                    ) : (
-                        <label>
-                            {props.done ? <del>{name}</del> : name}
-                        </label>
-                    )}
+
+                    <label>
+                        {props.done ? <del>{props.name}</del> : props.name}
+                    </label>
+
 
                 </div>
-                <div onClick={() => setEdit(!edit)} className="m-2">
-                    {edit ?
-                        <AiOutlineCheck color={'#FFD700'} size={'22px'} /> :
-                        <BiPencil color={'#FFD700'} size={'22px'} />
-                    }
+                <div onClick={edit} className="m-2">
+                    <BiPencil color={'#FFD700'} size={'22px'} />
                 </div>
                 <div onClick={onDelete}>
                     <BiTrash color='#ff0000' size={'22px'} className="m-2" />

@@ -15,8 +15,8 @@ export default function App() {
             <Route path="/" element={<LandingPage />} />
             <Route element={<ProtectedRoutes />}>
                 <Route path="/dashboard" element={<MainPage />} />
-                <Route path="/createbigtask" element={<CreateBigTask />} />
-                <Route path="/createsprint" element={<CreateSprint />} />
+                <Route path="/createbigtask/:id" element={<CreateBigTask />} />
+                <Route path="/createsprint/:id" element={<CreateSprint />} />
                 <Route path="/showbigtask" element={<ShowBigTask />} />
                 <Route path="/showsprint" element={<ShowSprint />} />
                 <Route path="*" element={<NotFound />} />

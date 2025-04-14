@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
+import { useParams } from 'react-router-dom';
 
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
@@ -36,8 +37,9 @@ const initialBigTasks: BigTask[] = [
 const CreateSprint: React.FC = () => {
     const [tasks] = useState<BigTask[]>(initialBigTasks);
     const [sprintTasks, setSprintTasks] = useState<BigTask[]>([]); // initially empty sprint
+    const params = useParams();
 
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(params.id);
 
     // Set task data on drag start.
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, task: BigTask) => {
