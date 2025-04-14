@@ -2,17 +2,10 @@ import React, { useState } from 'react';
 import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
-
+import { BigTask } from '../lib/types';
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
 
-interface BigTask {
-    done: boolean;
-    name: string;
-    taskToDo: number;
-    donesTasks: number;
-    key_my: number;
-}
 
 // Initial list of tasks.
 const initialBigTasks: BigTask[] = [

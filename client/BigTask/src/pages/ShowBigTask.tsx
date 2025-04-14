@@ -2,12 +2,8 @@ import { useState } from 'react';
 import "../App.css"
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
+import { Task } from '../lib/types';
 
-type Task = {
-  name: string;
-  done: boolean;
-  key_my: number;
-};
 
 const ShowBigTask = () => {
   const [tasks] = useState<Task[]>([]);

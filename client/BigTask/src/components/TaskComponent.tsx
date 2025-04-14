@@ -3,20 +3,9 @@ import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
-import { callApi } from "../apiCalls";
+import { callApi } from "../lib/apiCalls";
 import { useAuth0 } from "@auth0/auth0-react";
-
-type Task = {
-  name: string,
-  done: boolean,
-  key_my: number,
-  color?: string,
-  inputClass?: string
-  children?: React.ReactNode,
-  dl?: (index: number) => void, //function on delete
-  dof?: () => void, //function on done
-  edit?: (e: React.MouseEvent) => void
-}
+import { Task } from "../lib/types";
 
 function TaskComponent(props: Task) {
 

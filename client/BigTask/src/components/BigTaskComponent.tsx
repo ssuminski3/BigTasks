@@ -1,16 +1,7 @@
 import TaskComponent from './TaskComponent';
 import { useNavigate } from 'react-router-dom';
 import React from 'react';
-
-type BigTask = {
-  name: string;
-  done: boolean;
-  key_my: number;
-  donesTasks: number;
-  taskToDo: number;
-  dl?: (index: number) => void,
-  dof?: () => void,
-};
+import { BigTask } from '../lib/types';
 
 function BigTaskComponent(props: BigTask) {
   const progressPercent = (props.donesTasks / props.taskToDo) * 100;

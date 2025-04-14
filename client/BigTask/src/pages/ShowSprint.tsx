@@ -3,15 +3,7 @@ import '../App.css';
 import TimePanel from '../components/TimePanel';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
-
-type Task = {
-    name: string;
-    done: boolean;
-    key_my: number;
-    color?: string;
-    inputClass?: string;
-    children?: React.ReactNode;
-};
+import { Task } from '../lib/types';
 
 function ShowSprint() {
     const params = useParams();

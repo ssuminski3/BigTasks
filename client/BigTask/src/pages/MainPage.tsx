@@ -5,15 +5,8 @@ import BigTaskComponent from '../components/BigTaskComponent';
 import SprintComponent from '../components/SprintComponent';
 import LogOut from '../components/LogOut';
 import { CiCirclePlus } from "react-icons/ci";
-
-// Define a TypeScript interface for a task.
-interface BigTask {
-  done: boolean;
-  name: string;
-  taskToDo: number;
-  donesTasks: number;
-  key_my: number;
-}
+import { BigTask } from '../lib/types';
+import { Sprint } from '../lib/types';
 
 // Initial list of tasks.
 const initialBigTasks: BigTask[] = [
@@ -34,11 +27,7 @@ const initialBigTasks: BigTask[] = [
   { done: true, name: "SIEMA14", taskToDo: 120, donesTasks: 33, key_my: 15 },
   { done: true, name: "SIEMA16", taskToDo: 120, donesTasks: 33, key_my: 16 },
 ];
-type Sprint = {
-  name: string,
-  key_my: number,
-  done: boolean
-}
+
 const sprintes: Sprint[] = [
   { name: "Sprint Alpha", key_my: 1, done: true },
   { name: "Sprint Beta", key_my: 2, done: true },

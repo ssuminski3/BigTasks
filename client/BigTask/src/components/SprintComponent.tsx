@@ -2,13 +2,8 @@ import React, { useRef } from 'react'
 import { BiPencil } from "react-icons/bi";
 import { BiTrash } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
+import { Sprint } from '../lib/types';
 
-type Sprint = {
-    name: string,
-    key_my: number,
-    done: boolean,
-    dl: (index: number) => void
-}
 
 function SprintComponent(props: Sprint) {
 
@@ -28,7 +23,7 @@ function SprintComponent(props: Sprint) {
     function onDelete() {
         if (confirm("Do you want to delete sprint ?")) {
             div.current?.classList.add("delete")
-            setTimeout(() => { div.current?.classList.remove("delete"); props.dl(props.key_my) }, 2000)
+            setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.key_my) }, 2000)
         }
     }
 
