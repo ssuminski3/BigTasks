@@ -14,10 +14,25 @@ export async function callApi(token: any) {
         console.error(e)
     }
 }
-export async function sendData(bigTask: BigTaskAdd, token: string) {
+export async function createBigTask(bigTask: BigTaskAdd, token: string) {
     console.log('bigTask to send:', bigTask);
     try {
         const response = await axios.post('http://localhost:3000/createbigtask/', bigTask, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
+
+export async function editBigTask(bigTask: BigTaskAdd, token: string, id: string) {
+    console.log('bigTask to send:', bigTask);
+    try {
+        const response = await axios.put('http://localhost:3000/editbigtask/', {...bigTask, id: /*id*/'67febb57f9ab5234f6c9bcc0'}, {
             headers: {
                 authorization: `Bearer ${token}`
             }

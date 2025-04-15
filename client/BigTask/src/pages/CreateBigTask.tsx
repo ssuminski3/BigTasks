@@ -3,12 +3,13 @@ import "../App.css"
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { Task } from '../lib/types';
-import { sendData } from '../lib/apiCalls';
+import { createBigTask, editBigTask } from '../lib/apiCalls';
 import { BigTaskAdd } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [oldTasks, setOldTasks] = useState<Task[]>([])
   const [inputValue, setInputValue] = useState('');
   const [taskMode, setTaskMode] = useState<'single' | 'multiple' | 'loop'>('single');
   const [loopCount, setLoopCount] = useState<number>(1);
@@ -65,7 +66,11 @@ const CreateBigTask = () => {
       tasks: tasks
     }
     console.log("Send")
-    await sendData(bigTask, await getAccessTokenSilently())
+    if(params.id != undefined){
+      await editBigTask(bigTask, await getAccessTokenSilently(), params.id.toString())
+      return;
+    }
+    await createBigTask(bigTask, await getAccessTokenSilently())
   }
 
   return (
@@ -91,7 +96,7 @@ const CreateBigTask = () => {
           <p className="text-gray-500">No tasks added.</p>
         ) : (
           <ul>
-            {tasks.map((task) => (
+            {[...tasks, ...oldTasks].map((task) => (
               <TaskComponent
                 name={task.name}
                 key={task.id}

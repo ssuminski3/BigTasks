@@ -4,7 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const { auth } = require('express-oauth2-jwt-bearer');
 const axios = require('axios');
-const { addBigTaskDb, addTaskToDb } = require('./addingToDb');
+const { addBigTaskDb, addTaskToDb, editBigTaskDb } = require('./addingToDb');
 
 
 const app = express();
@@ -25,10 +25,10 @@ app.use(jwtCheck);
 // Define routes BEFORE error middleware
 app.post('/createbigtask', async (req, res) => {
     console.log("SUPER");
-    console.log("Received POST /createbigtask", req.body);
+    console.log("Received PUT /createbigtask", req.body);
     try {
         // Example code to add a big task to the database
-        const id = await addBigTaskDb({ name: req.body.name, done: false });
+        const id = await addBigTaskDb({ name: req.body.name, done: req.body.done });
         req.body.tasks.forEach(task => addTaskToDb({name: task.name, done: task.done, bigTaskId: id}))
         console.log(id);
         res.status(200).send("Task created successfully");
@@ -37,6 +37,18 @@ app.post('/createbigtask', async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
+
+app.put('/editbigtask', async (req, res) => {
+    console.log("Received PUT /editbigtask", req.body);
+    try {
+        await editBigTaskDb(req.body.id, {name: req.body.name, done: req.body.done})
+        res.status(200).send("Worked")
+    }
+    catch (error) {
+        console.error("Failed to create task:", error.message);
+        res.status(500).send("Internal Server Error");
+    }
+})
 
 // 404 Not Found Middleware (catch-all for routes not defined)
 app.use((req, res, next) => {
