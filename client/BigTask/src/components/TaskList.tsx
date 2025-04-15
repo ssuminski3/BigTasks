@@ -1,5 +1,4 @@
 import TaskComponent from "./TaskComponent";
-import { Task } from "../lib/types";
 import { TaskListType } from "../lib/types";
 
 
@@ -13,9 +12,9 @@ const TaskList = (props: TaskListType) => {
             <ul>
                 {props.tasks.map((task) => (
                     <TaskComponent
-                        key={task.key_my}
+                        key={task.id}
                         name={task.name}
-                        key_my={task.key_my}
+                        id={task.id}
                         done={task.done ?? false}
                         dl={props.remove}
                         dof={props.toggleDone}

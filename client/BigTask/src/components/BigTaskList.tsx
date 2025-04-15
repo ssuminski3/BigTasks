@@ -8,12 +8,12 @@ function BigTaskList(props: BigTaskListType) {
         <div className="overflow-y-scroll h-11/12 m-auto">
             {props.tasks.map((task: BigTask) => (
                 <BigTaskComponent
-                    key={task.key_my}
+                    key={task.id}
                     name={task.name}
                     done={task.done}
                     taskToDo={task.taskToDo}
                     donesTasks={task.donesTasks}
-                    key_my={task.key_my}
+                    id={task.id}
                     dl={props.removeBigTaks}
                     dof={props.toggleDone}
                 />

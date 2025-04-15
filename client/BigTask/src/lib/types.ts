@@ -1,7 +1,7 @@
 export type Task = {
     name: string,
     done: boolean,
-    key_my: number,
+    id: number,
     color?: string,
     inputClass?: string
     children?: React.ReactNode,
@@ -13,7 +13,7 @@ export type Task = {
 export type BigTask = {
     name: string;
     done: boolean;
-    key_my: number;
+    id: number;
     donesTasks: number;
     taskToDo: number;
     dl?: (index: number) => void,
@@ -22,7 +22,7 @@ export type BigTask = {
 
 export type Sprint = {
     name: string,
-    key_my: number,
+    id: number,
     done: boolean,
     dl?: (index: number) => void
 }
@@ -42,4 +42,10 @@ export type TaskListType = {
     tasks: Task[],
     remove: (index: number) => void,
     toggleDone: (index: number) => void
+}
+
+export type BigTaskAdd = {
+    name: string,
+    done: boolean,
+    tasks: Task[]
 }

@@ -24,7 +24,7 @@ function TaskComponent(props: Task) {
     setTimeout(() => {
       div.current?.classList.add("delete")
       setTimeout(() => {
-        div.current?.classList.remove("delete"); props.dof?.(props.key_my)
+        div.current?.classList.remove("delete"); props.dof?.(props.id)
       }, 2000)
       div.current?.classList.remove("expanse")
     }, 1000)
@@ -60,7 +60,7 @@ function TaskComponent(props: Task) {
     e.stopPropagation()
     if (confirm("Do you want to delete task ?")) {
       div.current?.classList.add("delete")
-      setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.key_my) }, 2000)
+      setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.id) }, 2000)
     }
   }
 
@@ -73,7 +73,7 @@ function TaskComponent(props: Task) {
       <div className="flex">
         <div className="w-full flex">
           <input
-            id={props.key_my.toString()}
+            id={props.id.toString()}
             checked={done}
             onChange={onChecked}
             onClick={(e) => e.stopPropagation()}
@@ -91,7 +91,7 @@ function TaskComponent(props: Task) {
             />
           ) : (
             <label
-              htmlFor={props.key_my.toString()}
+              htmlFor={props.id.toString()}
               ref={text}
               onLoad={() => done && animateText}
             >

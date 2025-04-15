@@ -10,21 +10,21 @@ import { BigTask, Sprint } from '../lib/types';
 
 // Initial list of tasks.
 const initialBigTasks: BigTask[] = [
-  { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, key_my: 1 },
-  { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, key_my: 2 },
+  { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, id: 1 },
+  { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, id: 2 },
 ];
 
 const sprintes: Sprint[] = [
-  { name: "Sprint Alpha", key_my: 1, done: true },
-  { name: "Sprint Beta", key_my: 2, done: true },
-  { name: "Sprint Gamma", key_my: 3, done: true },
-  { name: "Sprint Delta", key_my: 4, done: true },
-  { name: "Sprint Epsilon", key_my: 5, done: true },
-  { name: "Sprint Alpha", key_my: 1, done: false },
-  { name: "Sprint Beta", key_my: 2, done: true },
-  { name: "Sprint Gamma", key_my: 3, done: true },
-  { name: "Sprint Delta", key_my: 4, done: false },
-  { name: "Sprint Epsilon", key_my: 5, done: true },
+  { name: "Sprint Alpha", id: 1, done: true },
+  { name: "Sprint Beta", id: 2, done: true },
+  { name: "Sprint Gamma", id: 3, done: true },
+  { name: "Sprint Delta", id: 4, done: true },
+  { name: "Sprint Epsilon", id: 5, done: true },
+  { name: "Sprint Alpha", id: 1, done: false },
+  { name: "Sprint Beta", id: 2, done: true },
+  { name: "Sprint Gamma", id: 3, done: true },
+  { name: "Sprint Delta", id: 4, done: false },
+  { name: "Sprint Epsilon", id: 5, done: true },
 ];
 
 function MainPage() {
@@ -37,33 +37,33 @@ function MainPage() {
   // Remove a task based on its key.
   function removeBigTaks(key: number) {
     console.log("Before removal:", tasks.length);
-    const updatedTasks = tasks.filter(task => task.key_my !== key);
+    const updatedTasks = tasks.filter(task => task.id !== key);
     setTasks(updatedTasks);
     console.log("After removal:", updatedTasks.length);
   }
 
   function removeDoneBigTaks(key: number) {
     console.log("Before removal:", doneTasks.length);
-    const updatedTasks = doneTasks.filter(task => task.key_my !== key);
+    const updatedTasks = doneTasks.filter(task => task.id !== key);
     setDoneTasks(updatedTasks);
     console.log("After removal:", updatedTasks.length);
   }
 
   function removeSprint(key: number) {
     console.log("Before removal (sprints):", sprints.length);
-    const updatedSprints = sprints.filter(sprint => sprint.key_my !== key);
+    const updatedSprints = sprints.filter(sprint => sprint.id !== key);
     setSprints(updatedSprints);
     console.log("After removal:", updatedSprints.length);
   }
 
   const toggleDone = (key: number) => {
     setTasks(prevTasks => {
-      const taskToMove = prevTasks.find(task => task.key_my === key);
+      const taskToMove = prevTasks.find(task => task.id === key);
       if (!taskToMove) return prevTasks; // safety check
       // Move the task to doneTasks with 'done: true'
       setDoneTasks(prevDone => [...prevDone, { ...taskToMove, done: true }]);
       console.log("Task marked as done");
-      return prevTasks.filter(task => task.key_my !== key);
+      return prevTasks.filter(task => task.id !== key);
     });
   };
 

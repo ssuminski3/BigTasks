@@ -9,17 +9,17 @@ function BigTaskComponent(props: BigTask) {
 
   const edit = (e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate(`/createbigtask/${props.key_my}`)
+    navigate(`/createbigtask/${props.id}`)
   }
 
   const show = (e: React.MouseEvent) => {
     e.stopPropagation()
-    navigate(`/showbigtask/${props.key_my}`)
+    navigate(`/showbigtask/${props.id}`)
 }
 
   return (
     <div onClick={show}>
-      <TaskComponent color="#FF9800" name={props.name} done={props.done} key_my={props.key_my} inputClass='input-bigtask-color' dl={props.dl} dof={props.dof} edit={edit}>
+      <TaskComponent color="#FF9800" name={props.name} done={props.done} id={props.id} inputClass='input-bigtask-color' dl={props.dl} dof={props.dof} edit={edit}>
         <div className="w-full mt-1 bg-indigo-300">
           <div style={{ width: `${progressPercent}%`, height: '10px', backgroundColor: '#FF9800' }}></div>
         </div>

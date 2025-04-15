@@ -9,10 +9,10 @@ function SprintList(props: SprintListType) {
     <div className="overflow-y-scroll h-11/12 m-auto">
       {props.sprints.map((sprint: Sprint) => (
         <SprintComponent 
-          key={sprint.key_my} 
+          key={sprint.id} 
           name={sprint.name} 
           done={sprint.done} 
-          key_my={sprint.key_my} 
+          id={sprint.id} 
           dl={props.removeSprint} 
         />
       ))}

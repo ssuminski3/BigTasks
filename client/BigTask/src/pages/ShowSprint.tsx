@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import '../App.css';
 import TimePanel from '../components/TimePanel';
-import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { Task } from '../lib/types';
 import TaskList from '../components/TaskList';
@@ -12,27 +11,27 @@ function ShowSprint() {
     const [sprintName] = useState(params.id);
 
     const initialTasks: Task[] = [
-        { name: "Write project proposal", done: false, key_my: 1 },
-        { name: "Review pull requests", done: true, key_my: 2 },
-        { name: "Update documentation", done: false, key_my: 3 },
-        { name: "Fix login bug", done: true, key_my: 4 },
-        { name: "Design new feature mockups", done: false, key_my: 5 },
-        { name: "Deploy to staging", done: true, key_my: 6 },
-        { name: "Prepare sprint demo", done: false, key_my: 7 },
+        { name: "Write project proposal", done: false, id: 1 },
+        { name: "Review pull requests", done: true, id: 2 },
+        { name: "Update documentation", done: false, id: 3 },
+        { name: "Fix login bug", done: true, id: 4 },
+        { name: "Design new feature mockups", done: false, id: 5 },
+        { name: "Deploy to staging", done: true, id: 6 },
+        { name: "Prepare sprint demo", done: false, id: 7 },
     ];
 
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
     // Remove task by key
     const remove = (key: number) => {
-        setTasks(prevTasks => prevTasks.filter(task => task.key_my !== key));
+        setTasks(prevTasks => prevTasks.filter(task => task.id !== key));
     };
 
     // Toggle task done status by key
     const toggleDone = (key: number) => {
         setTasks(prevTasks =>
             prevTasks.map(task =>
-                task.key_my === key ? { ...task, done: !task.done } : task
+                task.id === key ? { ...task, done: !task.done } : task
             )
         );
     };

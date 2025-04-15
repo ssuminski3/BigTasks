@@ -3,7 +3,9 @@ import "../App.css"
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { Task } from '../lib/types';
-
+import { sendData } from '../lib/apiCalls';
+import { BigTaskAdd } from '../lib/types';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -12,6 +14,7 @@ const CreateBigTask = () => {
   const [loopCount, setLoopCount] = useState<number>(1);
   const params = useParams();
   const [editText, setEditText] = useState(params.id);
+  const { getAccessTokenSilently} = useAuth0();
 
   const handleAddTask = () => {
     const trimmed = inputValue.trim();
@@ -22,7 +25,7 @@ const CreateBigTask = () => {
       const newTask: Task = {
         name: trimmed,
         done: false,
-        key_my: Date.now(),
+        id: Date.now(),
       };
       setTasks([...tasks, newTask]);
     } else if (taskMode === 'multiple') {
@@ -31,7 +34,7 @@ const CreateBigTask = () => {
       const newTasks = lines.map(line => ({
         name: line,
         done: false,
-        key_my: Date.now() + Math.random(),
+        id: Date.now() + Math.random(),
       }));
       setTasks([...tasks, ...newTasks]);
     } else if (taskMode === 'loop') {
@@ -41,7 +44,7 @@ const CreateBigTask = () => {
         newTasks.push({
           name: `${trimmed} ${i}`,
           done: false,
-          key_my: Date.now() + i,
+          id: Date.now() + i,
         });
       }
       setTasks([...tasks, ...newTasks]);
@@ -51,10 +54,24 @@ const CreateBigTask = () => {
     setInputValue('');
   };
 
+  const handleSave = async () => {
+    if(!editText){
+      alert("You need to name Big Task")
+      return
+    }
+    let bigTask: BigTaskAdd = {
+      name: editText || '',
+      done: false,
+      tasks: tasks
+    }
+    console.log("Send")
+    await sendData(bigTask, await getAccessTokenSilently())
+  }
+
   return (
     <div className="h-screen back p-4 flex flex-col">
       {/* Top right text edit section */}
-      <div className="flex justify-start mb-4">
+      <div className="flex mb-4 w-full justify-between items-center">
         <input
           value={editText}
           maxLength={15}
@@ -62,6 +79,9 @@ const CreateBigTask = () => {
           className="border border-gray-300 rounded p-2 w-1/3 text-2xl"
           placeholder="Edit text here..."
         />
+        <button className="bg-[#3366CC] hover:bg-[#254A99] text-white text-lg px-8 py-4 rounded-2xl shadow-md" onClick={handleSave}>
+          Save
+        </button>
       </div>
 
       {/* Tasks list display */}
@@ -74,8 +94,8 @@ const CreateBigTask = () => {
             {tasks.map((task) => (
               <TaskComponent
                 name={task.name}
-                key={task.key_my}
-                key_my={task.key_my}
+                key={task.id}
+                id={task.id}
                 done={false} />
             ))}
           </ul>
@@ -145,8 +165,8 @@ const CreateBigTask = () => {
             taskMode === 'single'
               ? 'Enter a task...'
               : taskMode === 'multiple'
-              ? 'Enter tasks separated by new lines...'
-              : 'Enter task name to repeat...'
+                ? 'Enter tasks separated by new lines...'
+                : 'Enter task name to repeat...'
           }
           className="w-full border border-gray-300 rounded p-2 mb-2"
           rows={3}
