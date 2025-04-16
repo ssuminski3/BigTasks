@@ -74,7 +74,7 @@ export async function getTask( token: string, bigTaskId: string ) {
 
 export async function doTask( token: string, id: string){
     try {
-        const response = await axios.put('http://localhost:3000/dotask/', {id: '67ffd11309ff73e42e6b7080'}, {
+        const response = await axios.put('http://localhost:3000/dotask/', {id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -94,6 +94,35 @@ export async function createSprint(sprint: Sprint, token: string) {
             }
         });
         console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
+export async function getSprints(token: string){
+    try {
+        const response = await axios.get('http://localhost:3000/getsprints/', {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        })
+        console.log("Response: ", response.data)
+        return response.data
+    } catch (error) {
+        console.error("Error getting data: ", error)
+    }
+}
+
+export async function getSprint( token: string, sprintId: string ) {
+    try {
+        const response = await axios.get('http://localhost:3000/getsprint/', {
+            params: { sprintId },
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+        return response.data
     } catch (e) {
         console.error('Error sending data:', e);
     }

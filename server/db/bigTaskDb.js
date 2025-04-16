@@ -57,7 +57,7 @@ async function getBigTasksByUserId(userId) {
         const collectionBig = db.collection('BigTasks');
         const collection = db.collection('Tasks')
 
-        const tasksFromDb = await collectionBig.find({ userId: userId }).toArray();
+        const tasksFromDb = await collectionBig.find({ userId: userId }, { userId: 0}).toArray();
         const tasks = await Promise.all(
             tasksFromDb.map(async task => {
 

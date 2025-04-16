@@ -9,34 +9,26 @@ import { CiCirclePlus } from "react-icons/ci";
 import { BigTask, Sprint } from '../lib/types';
 import { getBigTask } from '../lib/apiCalls';
 import { useAuth0 } from '@auth0/auth0-react';
-
-
-const sprintes: Sprint[] = [
-  { name: "Sprint Alpha", id: '1', done: true },
-  { name: "Sprint Beta", id: '2', done: true },
-  { name: "Sprint Gamma", id: '3', done: true },
-  { name: "Sprint Delta", id: '4', done: true },
-  { name: "Sprint Epsilon", id: '5', done: true },
-  { name: "Sprint Alpha", id: '1', done: false },
-  { name: "Sprint Beta", id: '2', done: true },
-  { name: "Sprint Gamma", id: '3', done: true },
-  { name: "Sprint Delta", id: '4', done: false },
-  { name: "Sprint Epsilon", id: '5', done: true },
-];
+import { getSprints } from '../lib/apiCalls';
 
 function MainPage() {
   // Set up state for managing tasks.
   const [tasks, setTasks] = useState<BigTask[]>([]);
-  const [sprints, setSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === false));
+  const [sprints, setSprints] = useState<Sprint[]>([]);
   const [doneTasks, setDoneTasks] = useState<BigTask[]>([]);
-  const [doneSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === true));
+  const [doneSprints, setDoneSprints] = useState<Sprint[]>([]);
   const {getAccessTokenSilently} = useAuth0();
   useEffect(() => {
     const fetchData = async () => {
       const token = await getAccessTokenSilently();
+
       const initialBigTasks = await getBigTask(token);
       setTasks(initialBigTasks.filter((e: BigTask) => e.done === false))
       setDoneTasks(initialBigTasks.filter((e: BigTask) => e.done === true))
+
+      const initialSprints = await getSprints(token);
+      setSprints(initialSprints.filter((e: Sprint) => e.done === false))
+      setDoneSprints(initialSprints.filter((e: Sprint) => e.done === true))
     };
   
     fetchData();

@@ -1,5 +1,5 @@
 const { getUserSub } = require('../middleware/userId')
-const { addSprintToDb } = require('../db/sprintDb')
+const { addSprintToDb, getSprintsDb, getSprintDb } = require('../db/sprintDb')
 
 const createSprint = async (req, res) => {
     console.log("Received POST /createsprint", req.body);
@@ -14,4 +14,32 @@ const createSprint = async (req, res) => {
     }
 };
 
-module.exports = { createSprint }
+const getSprints = async (req, res) => {
+    console.log("Recived GET /getsprints")
+    try {
+        const userId = await getUserSub(req)
+        const sprintsDb = await getSprintsDb(userId)
+        const sprints = sprintsDb.map(sprint => ({ ...sprint, id: sprint._id }))
+        console.log(sprints)
+        res.send(sprints)
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+
+const getSprint = async (req, res) => {
+    console.log("Recived GET /getsprints")
+    try {
+        const userId = await getUserSub(req)
+        const sprintDb = await getSprintDb(userId, req.query.sprintId)
+        const sprints = {...sprintDb, id: sprintDb._id}
+        console.log(sprints)
+        res.send(sprints)
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+
+module.exports = { createSprint, getSprints, getSprint }
