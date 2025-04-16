@@ -1,5 +1,5 @@
 const { getUserSub } = require('../middleware/userId')
-const { addSprintToDb, getSprintsDb, getSprintDb } = require('../db/sprintDb')
+const { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb } = require('../db/sprintDb')
 
 const createSprint = async (req, res) => {
     console.log("Received POST /createsprint", req.body);
@@ -42,4 +42,16 @@ const getSprint = async (req, res) => {
     }
 }
 
-module.exports = { createSprint, getSprints, getSprint }
+const editSprint = async (req, res) => {
+    console.log("Recived PUT /editsprint", req.body)
+    try {
+        const userId = await getUserSub(req)
+        await editSprintDb(userId, req.body.id, req.body.sprint)
+        res.status(200).send("Sprin edited")
+    }
+    catch(e){
+        console.error(e)
+    }
+}
+
+module.exports = { createSprint, getSprints, getSprint, editSprint }

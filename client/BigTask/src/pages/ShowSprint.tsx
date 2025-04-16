@@ -15,7 +15,6 @@ function ShowSprint() {
     const [sprintName, setSprintName] = useState('');
     const [tasks, setTasks] = useState<Task[]>([]);
     const [initialSeconds, setInitialSeconds] = useState(0)
-    const [seconds, setSeconds] = useState(initialSeconds);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -30,10 +29,6 @@ function ShowSprint() {
         }
         fetchData()
     }, [])
-
-    useEffect(() => {
-        setSeconds(initialSeconds);
-    }, [initialSeconds]);
 
 
     // Remove task by key

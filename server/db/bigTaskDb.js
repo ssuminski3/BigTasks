@@ -1,5 +1,5 @@
 const { ObjectId } = require('mongodb');
-const connectToDb = require('./connectToDb');
+const { connectToDb } = require('./connectToDb');
 let client;
 
 

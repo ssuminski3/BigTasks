@@ -3,8 +3,9 @@ import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { BigTask, Sprint } from '../lib/types';
-import { createSprint, getBigTask, getTask } from '../lib/apiCalls';
+import { createSprint, getBigTask, getTask, getSprint, editSprint } from '../lib/apiCalls';
 import { useAuth0 } from '@auth0/auth0-react';
+
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
 
@@ -13,7 +14,7 @@ const CreateSprint: React.FC = () => {
     const [sprintTasks, setSprintTasks] = useState<BigTask[]>([]); // initially empty sprint
     const params = useParams();
 
-    const [inputValue, setInputValue] = useState(params.id);
+    const [inputValue, setInputValue] = useState('');
     const [hourValue, setHourValue] = useState(0);
     const [minuteValue, setMinuteValue] = useState(0);
 
@@ -24,6 +25,15 @@ const CreateSprint: React.FC = () => {
             const token = await getAccessTokenSilently();
             const initialBigTasks = await getBigTask(token);
             setTasks(initialBigTasks.filter((e: BigTask) => e.done === false))
+
+            if (params.id != undefined) {
+                const sprint = await getSprint(token, params.id)
+                console.log("NICE: " + sprint.hours)
+                setSprintTasks(sprint.tasks)
+                setInputValue(sprint.name)
+                setHourValue(sprint.hours)
+                setMinuteValue(sprint.minutes)
+            }
         };
 
         fetchData();
@@ -57,19 +67,26 @@ const CreateSprint: React.FC = () => {
             alert("You need to name Sprint")
             return
         }
-        if(sprintTasks.length == 0)
-        {
+        if (sprintTasks.length == 0) {
             alert("Add tasks to sprint.")
             return
         }
-        if(!minuteValue && ! hourValue){
+        if (!minuteValue && !hourValue) {
             alert("Specify duration of sprint")
+            return
+        }
+        const sprint: Sprint = { tasks: sprintTasks.map(item => item.id), name: inputValue, done: false, id: "", hours: hourValue, minutes: minuteValue }
+        if(params.id != undefined){
+            try{
+                await editSprint(sprint, await getAccessTokenSilently(), params.id)
+            } catch(e) {
+                console.error(e)
+            }
             return 
         }
-        const sprint: Sprint = {tasks: sprintTasks.map(item => item.id), name: inputValue, done: false, id: "", hours: hourValue, minutes: minuteValue}
-        try{
-        await createSprint(sprint, await getAccessTokenSilently());
-        } catch(e) {
+        try {
+            await createSprint(sprint, await getAccessTokenSilently());
+        } catch (e) {
             console.log(e)
         }
     }
