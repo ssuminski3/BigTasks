@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import "../App.css"
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
@@ -6,6 +6,7 @@ import { Task } from '../lib/types';
 import { createBigTask, editBigTask } from '../lib/apiCalls';
 import { BigTaskAdd } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
+import { getTask } from '../lib/apiCalls';
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -15,7 +16,19 @@ const CreateBigTask = () => {
   const [loopCount, setLoopCount] = useState<number>(1);
   const params = useParams();
   const [editText, setEditText] = useState(params.id);
-  const { getAccessTokenSilently} = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (params.id != undefined) {
+        const token = await getAccessTokenSilently()
+        const tasks = await getTask(token, params.id)
+        console.log("NICE: "+JSON.stringify(tasks))
+        setOldTasks(tasks)
+      }
+    }
+    fetchData()
+  }, [])
 
   const handleAddTask = () => {
     const trimmed = inputValue.trim();
@@ -56,7 +69,7 @@ const CreateBigTask = () => {
   };
 
   const handleSave = async () => {
-    if(!editText){
+    if (!editText) {
       alert("You need to name Big Task")
       return
     }
@@ -66,7 +79,7 @@ const CreateBigTask = () => {
       tasks: tasks
     }
     console.log("Send")
-    if(params.id != undefined){
+    if (params.id != undefined) {
       await editBigTask(bigTask, await getAccessTokenSilently(), params.id.toString())
       return;
     }
@@ -92,7 +105,7 @@ const CreateBigTask = () => {
       {/* Tasks list display */}
       <div className="flex-grow bg-white rounded shadow p-4 overflow-auto">
         <h2 className="text-xl font-bold mb-2">Tasks</h2>
-        {tasks.length === 0 ? (
+        {tasks.length === 0 && oldTasks.length === 0 ? (
           <p className="text-gray-500">No tasks added.</p>
         ) : (
           <ul>
@@ -101,7 +114,7 @@ const CreateBigTask = () => {
                 name={task.name}
                 key={task.id}
                 id={task.id}
-                done={false} />
+                done={task.done} />
             ))}
           </ul>
         )}

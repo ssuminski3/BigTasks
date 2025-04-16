@@ -1,4 +1,5 @@
-const { addBigTaskDb, addTaskToDb, editBigTaskDb, getBigTasksByUserId } = require('../db/bigTaskDb');
+const { addBigTaskDb, editBigTaskDb, getBigTasksByUserId } = require('../db/bigTaskDb');
+const { addTaskToDb } = require('../db/taskDb')
 const { getUserSub } = require('../middleware/userId')
 
 const createBigTask = async (req, res) => {

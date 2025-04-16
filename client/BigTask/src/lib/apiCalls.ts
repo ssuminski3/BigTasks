@@ -57,6 +57,21 @@ export async function getBigTask( token: string ) {
     }
 }
 
+export async function getTask( token: string, bigTaskId: string ) {
+    try {
+        const response = await axios.get('http://localhost:3000/tasks/', {
+            params: { bigTaskId },
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+        return response.data
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
 export async function doTask( token: string, id: string){
     try {
         const response = await axios.put('http://localhost:3000/dotask/', {id: '67ffd11309ff73e42e6b7080'}, {

@@ -1,14 +1,28 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import "../App.css"
 import TaskList from '../components/TaskList';
 import { useParams } from 'react-router-dom';
 import { Task } from '../lib/types';
-
+import { useAuth0 } from '@auth0/auth0-react';
+import { getTask } from '../lib/apiCalls';
 
 const ShowBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const params = useParams();
   const [text] = useState(params.id);
+  const { getAccessTokenSilently } = useAuth0()
+
+  useEffect(() => {
+      const fetchData = async () => {
+        if (params.id != undefined) {
+          const token = await getAccessTokenSilently()
+          const tasks = await getTask(token, params.id)
+          console.log("NICE: "+JSON.stringify(tasks))
+          setTasks(tasks)
+        }
+      }
+      fetchData()
+    }, [])
 
   // Remove task by key
   const remove = (key: string) => {

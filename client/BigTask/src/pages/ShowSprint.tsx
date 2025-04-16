@@ -36,6 +36,8 @@ function ShowSprint() {
         );
     };
 
+    
+
     const completed = tasks.filter(task => task.done).length;
     const progress = tasks.length === 0 ? 0 : (completed / tasks.length) * 100;
 

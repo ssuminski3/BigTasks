@@ -1,38 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { BigTask } from '../lib/types';
+import { getBigTask, getTask } from '../lib/apiCalls';
+import { useAuth0 } from '@auth0/auth0-react';
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
 
-
-// Initial list of tasks.
-const initialBigTasks: BigTask[] = [
-    { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, id: '1' },
-    { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, id: '2' },
-    { done: false, name: "SIEMA3", taskToDo: 120, donesTasks: 33, id: '3' },
-    { done: false, name: "SIEMA4", taskToDo: 120, donesTasks: 33, id: '4' },
-    { done: true, name: "SIEMA5", taskToDo: 120, donesTasks: 33, id: '5' },
-    { done: false, name: "SIEMA6", taskToDo: 120, donesTasks: 33, id: '6' },
-    { done: false, name: "SIEMA7", taskToDo: 120, donesTasks: 33, id: '7' },
-    { done: true, name: "SIEMA8", taskToDo: 120, donesTasks: 33, id: '8' },
-    { done: false, name: "SIEMA9", taskToDo: 120, donesTasks: 33, id: '9' },
-    { done: true, name: "SIEMA10", taskToDo: 120, donesTasks: 33, id: '10' },
-    { done: true, name: "SIEMA11", taskToDo: 120, donesTasks: 33, id: '11' },
-    { done: false, name: "SIEMA12", taskToDo: 120, donesTasks: 33, id: '12' },
-    { done: false, name: "SIEMA13", taskToDo: 120, donesTasks: 33, id: '13' },
-    { done: false, name: "SIEMA15", taskToDo: 120, donesTasks: 33, id: '14' },
-    { done: true, name: "SIEMA14", taskToDo: 120, donesTasks: 33, id: '15' },
-    { done: true, name: "SIEMA16", taskToDo: 120, donesTasks: 33, id: '16' },
-];
-
 const CreateSprint: React.FC = () => {
-    const [tasks] = useState<BigTask[]>(initialBigTasks);
+    const [tasks, setTasks] = useState<BigTask[]>([]);
     const [sprintTasks, setSprintTasks] = useState<BigTask[]>([]); // initially empty sprint
     const params = useParams();
 
     const [inputValue, setInputValue] = useState(params.id);
+
+    const { getAccessTokenSilently } = useAuth0();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const token = await getAccessTokenSilently();
+            const initialBigTasks = await getBigTask(token);
+            setTasks(initialBigTasks.filter((e: BigTask) => e.done === false))
+        };
+
+        fetchData();
+    }, []);
 
     // Set task data on drag start.
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, task: BigTask) => {
@@ -45,31 +38,44 @@ const CreateSprint: React.FC = () => {
     };
 
     // On drop, retrieve the task data and add it to the sprintTasks.
-    const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    const handleDrop = async (event: React.DragEvent<HTMLDivElement>) => {
         event.preventDefault();
         const data = event.dataTransfer.getData('task');
         console.log(data)
         if (data) {
             const droppedTask: BigTask = JSON.parse(data);
-
-            // Optionally, check if the task already exists in sprintTasks.
-            if (!sprintTasks.find(task => task.id === droppedTask.id)) {
-                setSprintTasks([...sprintTasks, droppedTask]);
-            }
+            const droppedTasks = await getTask(await getAccessTokenSilently(), droppedTask.id)
+            setSprintTasks([...sprintTasks, ...droppedTasks])
+            setTasks(tasks.filter(task => task.id != droppedTask.id))
         }
     };
 
+    const handleSave = async () => {
+        if (!inputValue) {
+            alert("You need to name Sprint")
+            return
+        }
+        if(sprintTasks.length == 0)
+        {
+            alert("Add tasks to sprint.")
+            return
+        }
+        console.log(sprintTasks.map(item => item.id))
+    }
+
     return (
         <div className="h-screen bg-gray-100 p-4">
-            {/* Top-left input area */}
-            <div className="mb-4">
+            <div className="flex mb-4 w-full justify-between items-center">
                 <input
-                    type="text"
                     value={inputValue}
+                    maxLength={15}
                     onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="Enter task or search..."
-                    className="border border-gray-300 rounded p-2 w-full md:w-1/2 text-2xl"
+                    className="border border-gray-300 rounded p-2 w-1/3 text-2xl"
+                    placeholder="Sprint name"
                 />
+                <button className="bg-[#3366CC] hover:bg-[#254A99] text-white text-lg px-8 py-4 rounded-2xl shadow-md" onClick={handleSave}>
+                    Save
+                </button>
             </div>
 
             {/* Two side-by-side panels */}

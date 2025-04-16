@@ -21,23 +21,6 @@ async function addBigTaskDb(task) {
     }
 }
 
-async function addTaskToDb(task) {
-    try {
-        const client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection('Tasks');
-
-        if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
-            throw new Error('Invalid Task object');
-        }
-
-        const result = await collection.insertOne(task);
-        return result.insertedId;
-    } catch (error) {
-        console.error('Error inserting BigTask:', error);
-        throw error;
-    }
-}
 
 async function editBigTaskDb(id, updatedTask, userId) {
     try {
@@ -104,4 +87,4 @@ async function getBigTasksByUserId(userId) {
 }
 
 
-module.exports = { addBigTaskDb, addTaskToDb, editBigTaskDb, getBigTasksByUserId };
+module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId };
