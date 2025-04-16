@@ -12,7 +12,7 @@ async function addBigTaskDb(task) {
         if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
             throw new Error('Invalid BigTask object');
         }
-        console.log("Big task: "+task)
+        console.log("Big task: " + task)
         const result = await collection.insertOne(task);
         return result.insertedId;
     } catch (error) {
@@ -21,7 +21,7 @@ async function addBigTaskDb(task) {
     }
 }
 
-async function addTaskToDb(task){
+async function addTaskToDb(task) {
     try {
         const client = await connectToDb();
         const db = client.db("BigTask");
@@ -71,9 +71,31 @@ async function getBigTasksByUserId(userId) {
     try {
         const client = await connectToDb();
         const db = client.db("BigTask");
-        const collection = db.collection('BigTasks');
+        const collectionBig = db.collection('BigTasks');
+        const collection = db.collection('Tasks')
 
-        const tasks = await collection.find({ userId: userId }).toArray();
+        const tasksFromDb = await collectionBig.find({ userId: userId }).toArray();
+        const tasks = await Promise.all(
+            tasksFromDb.map(async task => {
+
+                const countCursorFalse = await collection.aggregate([
+                    { $match: { "bigTaskId": new ObjectId(task._id), "done": false } },
+                    { $count: "totalTasks" }
+                ]).toArray();  // <--- .toArray() to actually execute the aggregation!
+
+                const countCursorTrue = await collection.aggregate([
+                    { $match: { "bigTaskId": new ObjectId(task._id), "done": true } },
+                    { $count: "totalTasks" }
+                ]).toArray(); 
+
+                const countDone = countCursorTrue[0]?.totalTasks || 0;
+                const countTotal = (countCursorFalse[0]?.totalTasks || 0) + countDone;
+
+                return { ...task, taskToDo: countTotal, donesTasks: countDone, id: task._id };
+            })
+        );
+
+        console.log(tasks)
         return tasks;
     } catch (error) {
         console.error('Error fetching tasks for user:', error);

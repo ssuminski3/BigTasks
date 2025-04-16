@@ -1,5 +1,5 @@
 // MainPage.tsx
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Outlet, Link } from 'react-router-dom';
 import "../App.css";
 import BigTaskList from '../components/BigTaskList';
@@ -7,12 +7,9 @@ import SprintList from '../components/SprintList'; // Import the new SprintList 
 import LogOut from '../components/LogOut';
 import { CiCirclePlus } from "react-icons/ci";
 import { BigTask, Sprint } from '../lib/types';
+import { getBigTask } from '../lib/apiCalls';
+import { useAuth0 } from '@auth0/auth0-react';
 
-// Initial list of tasks.
-const initialBigTasks: BigTask[] = [
-  { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, id: '1' },
-  { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, id: '2' },
-];
 
 const sprintes: Sprint[] = [
   { name: "Sprint Alpha", id: '1', done: true },
@@ -29,10 +26,22 @@ const sprintes: Sprint[] = [
 
 function MainPage() {
   // Set up state for managing tasks.
-  const [tasks, setTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === false));
+  const [tasks, setTasks] = useState<BigTask[]>([]);
   const [sprints, setSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === false));
-  const [doneTasks, setDoneTasks] = useState<BigTask[]>(initialBigTasks.filter(e => e.done === true));
+  const [doneTasks, setDoneTasks] = useState<BigTask[]>([]);
   const [doneSprints] = useState<Sprint[]>(sprintes.filter(e => e.done === true));
+  const {getAccessTokenSilently} = useAuth0();
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = await getAccessTokenSilently();
+      const initialBigTasks = await getBigTask(token);
+      setTasks(initialBigTasks.filter((e: BigTask) => e.done === false))
+      setDoneTasks(initialBigTasks.filter((e: BigTask) => e.done === true))
+    };
+  
+    fetchData();
+  }, []);
+  
 
   // Remove a task based on its key.
   function removeBigTaks(key: string) {

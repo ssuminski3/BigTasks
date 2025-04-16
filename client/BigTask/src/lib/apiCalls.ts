@@ -32,7 +32,7 @@ export async function createBigTask(bigTask: BigTaskAdd, token: string) {
 export async function editBigTask(bigTask: BigTaskAdd, token: string, id: string) {
     console.log('bigTask to send:', bigTask);
     try {
-        const response = await axios.put('http://localhost:3000/editbigtask/', {...bigTask, id: /*id*/'67febb57f9ab5234f6c9bcc0'}, {
+        const response = await axios.put('http://localhost:3000/editbigtask/', {...bigTask, id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -45,12 +45,13 @@ export async function editBigTask(bigTask: BigTaskAdd, token: string, id: string
 
 export async function getBigTask( token: string ) {
     try {
-        const response = await axios.get('http://localhost:3000/protected/', {
+        const response = await axios.get('http://localhost:3000/bigtasks/', {
             headers: {
                 authorization: `Bearer ${token}`
             }
         });
         console.log('Response:', response.data);
+        return response.data
     } catch (e) {
         console.error('Error sending data:', e);
     }

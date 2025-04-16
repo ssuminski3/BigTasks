@@ -1,4 +1,4 @@
-const { addBigTaskDb, addTaskToDb, editBigTaskDb, getTasksByUserId } = require('../db/bigTaskDb');
+const { addBigTaskDb, addTaskToDb, editBigTaskDb, getBigTasksByUserId } = require('../db/bigTaskDb');
 const { getUserSub } = require('../middleware/userId')
 
 const createBigTask = async (req, res) => {
@@ -28,10 +28,10 @@ const editBigTask = async (req, res) => {
     }
 };
 
-const getBigTask = async (req, res) => {
+const getBigTasks = async (req, res) => {
     try {
         const userId = await getUserSub(req)
-        const tasks = await getTasksByUserId(userId)
+        const tasks = await getBigTasksByUserId(userId)
         res.send(tasks)
     }
     catch(e){
@@ -41,4 +41,4 @@ const getBigTask = async (req, res) => {
 
 
 
-module.exports = { createBigTask, editBigTask };
+module.exports = { createBigTask, editBigTask, getBigTasks };
