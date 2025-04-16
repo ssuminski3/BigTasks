@@ -1,47 +1,47 @@
 export type Task = {
     name: string,
     done: boolean,
-    id: number,
+    id: string,
     color?: string,
     inputClass?: string
     children?: React.ReactNode,
-    dl?: (index: number) => void, //function on delete
-    dof?: (index: number) => void, //function on done
+    dl?: (index: string) => void, //function on delete
+    dof?: (index: string) => void, //function on done
     edit?: (e: React.MouseEvent) => void
 }
 
 export type BigTask = {
     name: string;
     done: boolean;
-    id: number;
+    id: string;
     donesTasks: number;
     taskToDo: number;
-    dl?: (index: number) => void,
-    dof?: (index: number) => void,
+    dl?: (index: string) => void,
+    dof?: (index: string) => void,
 };
 
 export type Sprint = {
     name: string,
-    id: number,
+    id: string,
     done: boolean,
-    dl?: (index: number) => void
+    dl?: (index: string) => void
 }
 
 export type BigTaskListType = {
-    removeBigTaks: (index: number) => void,
-    toggleDone: (index: number) => void,
+    removeBigTaks: (index: string) => void,
+    toggleDone: (index: string) => void,
     tasks: BigTask[]
 }
 
 export type SprintListType = {
     sprints: Sprint[];
-    removeSprint: (key: number) => void;
+    removeSprint: (key: string) => void;
 }
 
 export type TaskListType = {
     tasks: Task[],
-    remove: (index: number) => void,
-    toggleDone: (index: number) => void
+    remove: (index: string) => void,
+    toggleDone: (index: string) => void
 }
 
 export type BigTaskAdd = {

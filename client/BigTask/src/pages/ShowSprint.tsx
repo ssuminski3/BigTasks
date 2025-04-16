@@ -11,24 +11,24 @@ function ShowSprint() {
     const [sprintName] = useState(params.id);
 
     const initialTasks: Task[] = [
-        { name: "Write project proposal", done: false, id: 1 },
-        { name: "Review pull requests", done: true, id: 2 },
-        { name: "Update documentation", done: false, id: 3 },
-        { name: "Fix login bug", done: true, id: 4 },
-        { name: "Design new feature mockups", done: false, id: 5 },
-        { name: "Deploy to staging", done: true, id: 6 },
-        { name: "Prepare sprint demo", done: false, id: 7 },
+        { name: "Write project proposal", done: false, id: '1' },
+        { name: "Review pull requests", done: true, id: '2' },
+        { name: "Update documentation", done: false, id: '3' },
+        { name: "Fix login bug", done: true, id: '4' },
+        { name: "Design new feature mockups", done: false, id: '5' },
+        { name: "Deploy to staging", done: true, id: '6' },
+        { name: "Prepare sprint demo", done: false, id: '7' },
     ];
 
     const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
     // Remove task by key
-    const remove = (key: number) => {
+    const remove = (key: string) => {
         setTasks(prevTasks => prevTasks.filter(task => task.id !== key));
     };
 
     // Toggle task done status by key
-    const toggleDone = (key: number) => {
+    const toggleDone = (key: string) => {
         setTasks(prevTasks =>
             prevTasks.map(task =>
                 task.id === key ? { ...task, done: !task.done } : task

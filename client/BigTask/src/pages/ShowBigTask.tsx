@@ -11,12 +11,12 @@ const ShowBigTask = () => {
   const [text] = useState(params.id);
 
   // Remove task by key
-  const remove = (key: number) => {
+  const remove = (key: string) => {
     setTasks(prevTasks => prevTasks.filter(task => task.id !== key));
   };
 
   // Toggle task done status by key
-  const toggleDone = (key: number) => {
+  const toggleDone = (key: string) => {
     setTasks(prevTasks =>
       prevTasks.map(task =>
         task.id === key ? { ...task, done: !task.done } : task

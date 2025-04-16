@@ -1,15 +1,7 @@
-const { MongoClient, ObjectId } = require('mongodb');
+const { ObjectId } = require('mongodb');
+const connectToDb = require('./connectToDb');
 let client;
-const uri = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.4.2";
 
-async function connectToDb() {
-    if (!client) {
-        client = new MongoClient(uri);
-        await client.connect();
-        console.log("Connected to MongoDB");
-    }
-    return client;
-}
 
 async function addBigTaskDb(task) {
     try {
@@ -20,7 +12,7 @@ async function addBigTaskDb(task) {
         if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
             throw new Error('Invalid BigTask object');
         }
-
+        console.log("Big task: "+task)
         const result = await collection.insertOne(task);
         return result.insertedId;
     } catch (error) {
@@ -47,7 +39,7 @@ async function addTaskToDb(task){
     }
 }
 
-async function editBigTaskDb(id, updatedTask) {
+async function editBigTaskDb(id, updatedTask, userId) {
     try {
         const client = await connectToDb();
         const db = client.db("BigTask");
@@ -60,7 +52,7 @@ async function editBigTaskDb(id, updatedTask) {
 
         // Update the task in the database
         const result = await collection.updateOne(
-            { _id: new ObjectId(id) }, // Use ObjectId to find the document
+            { _id: new ObjectId(id), userId: userId }, // Use ObjectId to find the document
             { $set: updatedTask } // Update the fields with the new values
         );
 
@@ -75,4 +67,19 @@ async function editBigTaskDb(id, updatedTask) {
     }
 }
 
-module.exports = { addBigTaskDb, addTaskToDb, editBigTaskDb };
+async function getBigTasksByUserId(userId) {
+    try {
+        const client = await connectToDb();
+        const db = client.db("BigTask");
+        const collection = db.collection('BigTasks');
+
+        const tasks = await collection.find({ userId: userId }).toArray();
+        return tasks;
+    } catch (error) {
+        console.error('Error fetching tasks for user:', error);
+        throw error;
+    }
+}
+
+
+module.exports = { addBigTaskDb, addTaskToDb, editBigTaskDb, getBigTasksByUserId };

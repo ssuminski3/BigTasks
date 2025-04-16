@@ -9,22 +9,22 @@ import { BigTask } from '../lib/types';
 
 // Initial list of tasks.
 const initialBigTasks: BigTask[] = [
-    { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, id: 1 },
-    { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, id: 2 },
-    { done: false, name: "SIEMA3", taskToDo: 120, donesTasks: 33, id: 3 },
-    { done: false, name: "SIEMA4", taskToDo: 120, donesTasks: 33, id: 4 },
-    { done: true, name: "SIEMA5", taskToDo: 120, donesTasks: 33, id: 5 },
-    { done: false, name: "SIEMA6", taskToDo: 120, donesTasks: 33, id: 6 },
-    { done: false, name: "SIEMA7", taskToDo: 120, donesTasks: 33, id: 7 },
-    { done: true, name: "SIEMA8", taskToDo: 120, donesTasks: 33, id: 8 },
-    { done: false, name: "SIEMA9", taskToDo: 120, donesTasks: 33, id: 9 },
-    { done: true, name: "SIEMA10", taskToDo: 120, donesTasks: 33, id: 10 },
-    { done: true, name: "SIEMA11", taskToDo: 120, donesTasks: 33, id: 11 },
-    { done: false, name: "SIEMA12", taskToDo: 120, donesTasks: 33, id: 12 },
-    { done: false, name: "SIEMA13", taskToDo: 120, donesTasks: 33, id: 13 },
-    { done: false, name: "SIEMA15", taskToDo: 120, donesTasks: 33, id: 14 },
-    { done: true, name: "SIEMA14", taskToDo: 120, donesTasks: 33, id: 15 },
-    { done: true, name: "SIEMA16", taskToDo: 120, donesTasks: 33, id: 16 },
+    { done: true, name: "SIEMA1", taskToDo: 120, donesTasks: 33, id: '1' },
+    { done: false, name: "SIEMA2", taskToDo: 120, donesTasks: 33, id: '2' },
+    { done: false, name: "SIEMA3", taskToDo: 120, donesTasks: 33, id: '3' },
+    { done: false, name: "SIEMA4", taskToDo: 120, donesTasks: 33, id: '4' },
+    { done: true, name: "SIEMA5", taskToDo: 120, donesTasks: 33, id: '5' },
+    { done: false, name: "SIEMA6", taskToDo: 120, donesTasks: 33, id: '6' },
+    { done: false, name: "SIEMA7", taskToDo: 120, donesTasks: 33, id: '7' },
+    { done: true, name: "SIEMA8", taskToDo: 120, donesTasks: 33, id: '8' },
+    { done: false, name: "SIEMA9", taskToDo: 120, donesTasks: 33, id: '9' },
+    { done: true, name: "SIEMA10", taskToDo: 120, donesTasks: 33, id: '10' },
+    { done: true, name: "SIEMA11", taskToDo: 120, donesTasks: 33, id: '11' },
+    { done: false, name: "SIEMA12", taskToDo: 120, donesTasks: 33, id: '12' },
+    { done: false, name: "SIEMA13", taskToDo: 120, donesTasks: 33, id: '13' },
+    { done: false, name: "SIEMA15", taskToDo: 120, donesTasks: 33, id: '14' },
+    { done: true, name: "SIEMA14", taskToDo: 120, donesTasks: 33, id: '15' },
+    { done: true, name: "SIEMA16", taskToDo: 120, donesTasks: 33, id: '16' },
 ];
 
 const CreateSprint: React.FC = () => {

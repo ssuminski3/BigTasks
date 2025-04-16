@@ -26,7 +26,7 @@ const CreateBigTask = () => {
       const newTask: Task = {
         name: trimmed,
         done: false,
-        id: Date.now(),
+        id: Date.now().toString(),
       };
       setTasks([...tasks, newTask]);
     } else if (taskMode === 'multiple') {
@@ -35,7 +35,7 @@ const CreateBigTask = () => {
       const newTasks = lines.map(line => ({
         name: line,
         done: false,
-        id: Date.now() + Math.random(),
+        id: (Date.now() + Math.random()).toString(),
       }));
       setTasks([...tasks, ...newTasks]);
     } else if (taskMode === 'loop') {
@@ -45,7 +45,7 @@ const CreateBigTask = () => {
         newTasks.push({
           name: `${trimmed} ${i}`,
           done: false,
-          id: Date.now() + i,
+          id: (Date.now() + i).toString(),
         });
       }
       setTasks([...tasks, ...newTasks]);

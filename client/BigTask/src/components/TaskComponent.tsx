@@ -3,8 +3,9 @@ import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
-import { callApi } from "../lib/apiCalls";
+import { doTask } from "../lib/apiCalls";
 import { Task } from "../lib/types";
+import { useAuth0 } from "@auth0/auth0-react";
 
 function TaskComponent(props: Task) {
 
@@ -14,11 +15,11 @@ function TaskComponent(props: Task) {
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(props.name)
   const [doneName, setDoneName] = useState(props.name)
-
+  const { getAccessTokenSilently} = useAuth0();
   const div = useRef<HTMLDivElement | null>(null);
   const text = useRef<HTMLLabelElement | null>(null);
 
-  function onChecked() {
+  async function onChecked() {
     setDone(!done)
     div.current?.classList.add("expanse")
     setTimeout(() => {
@@ -35,6 +36,7 @@ function TaskComponent(props: Task) {
       setName('')
       animateTextBack()
     }
+    await doTask(await getAccessTokenSilently(), props.id)
   }
 
   function animateText() {
