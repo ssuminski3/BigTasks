@@ -24,6 +24,9 @@ export type Sprint = {
     name: string,
     id: string,
     done: boolean,
+    hours: number,
+    minutes: number,
+    tasks?: string[],
     dl?: (index: string) => void
 }
 

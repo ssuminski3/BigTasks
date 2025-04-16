@@ -10,9 +10,7 @@ async function addSprintToDb(sprint) {
         if (typeof sprint.name !== 'string' || typeof sprint.done !== 'boolean') {
             throw new Error('Invalid Task object');
         }
-
-        const result = await collection.insertOne({name: sprint.name, done: sprint.done, hours: sprint.hours, minutes: sprint.minutes});
-        return result.insertedId;
+        await collection.insertOne(sprint);
     } catch (error) {
         console.error('Error inserting BigTask:', error);
         throw error;

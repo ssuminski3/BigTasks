@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
-import { BigTask } from '../lib/types';
-import { getBigTask, getTask } from '../lib/apiCalls';
+import { BigTask, Sprint } from '../lib/types';
+import { createSprint, getBigTask, getTask } from '../lib/apiCalls';
 import { useAuth0 } from '@auth0/auth0-react';
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
@@ -14,6 +14,8 @@ const CreateSprint: React.FC = () => {
     const params = useParams();
 
     const [inputValue, setInputValue] = useState(params.id);
+    const [hourValue, setHourValue] = useState(0);
+    const [minuteValue, setMinuteValue] = useState(0);
 
     const { getAccessTokenSilently } = useAuth0();
 
@@ -60,7 +62,16 @@ const CreateSprint: React.FC = () => {
             alert("Add tasks to sprint.")
             return
         }
-        console.log(sprintTasks.map(item => item.id))
+        if(!minuteValue && ! hourValue){
+            alert("Specify duration of sprint")
+            return 
+        }
+        const sprint: Sprint = {tasks: sprintTasks.map(item => item.id), name: inputValue, done: false, id: "", hours: hourValue, minutes: minuteValue}
+        try{
+        await createSprint(sprint, await getAccessTokenSilently());
+        } catch(e) {
+            console.log(e)
+        }
     }
 
     return (
@@ -73,6 +84,24 @@ const CreateSprint: React.FC = () => {
                     className="border border-gray-300 rounded p-2 w-1/3 text-2xl"
                     placeholder="Sprint name"
                 />
+                <p className='text-2xl'>Sprint duration:</p>
+                <div className='flex'>
+                    <input
+                        value={hourValue}
+                        maxLength={22}
+                        onChange={(e) => setHourValue(+e.target.value)}
+                        className="border border-gray-300 rounded p-2 w-1/12 text-2xl text-center"
+                        placeholder="HH"
+                    />
+                    <p className='text-2xl m-2'>:</p>
+                    <input
+                        value={minuteValue}
+                        maxLength={22}
+                        onChange={(e) => setMinuteValue(+e.target.value)}
+                        className="border border-gray-300 rounded p-2 w-1/12 text-2xl text-center"
+                        placeholder="MM"
+                    />
+                </div>
                 <button className="bg-[#3366CC] hover:bg-[#254A99] text-white text-lg px-8 py-4 rounded-2xl shadow-md" onClick={handleSave}>
                     Save
                 </button>

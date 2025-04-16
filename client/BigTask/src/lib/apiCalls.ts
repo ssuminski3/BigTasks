@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BigTaskAdd } from "./types";
+import { BigTaskAdd, Sprint } from "./types";
 
 export async function callApi(token: any) {
     try {
@@ -75,6 +75,20 @@ export async function getTask( token: string, bigTaskId: string ) {
 export async function doTask( token: string, id: string){
     try {
         const response = await axios.put('http://localhost:3000/dotask/', {id: '67ffd11309ff73e42e6b7080'}, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
+export async function createSprint(sprint: Sprint, token: string) {
+    console.log('sprint to send:', sprint);
+    try {
+        const response = await axios.post('http://localhost:3000/createsprint/', sprint, {
             headers: {
                 authorization: `Bearer ${token}`
             }
