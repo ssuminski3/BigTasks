@@ -30,7 +30,7 @@ async function editBigTaskDb(id, updatedTask, userId) {
   if (typeof updatedTask.name !== 'string' || typeof updatedTask.done !== 'boolean') {
     throw new Error('Invalid BigTask object');
   }
-
+  console.log("What am I saving: ", updatedTask)
   const result = await db.collection('BigTasks').updateOne(
     { _id: new ObjectId(id), userId },
     { $set: updatedTask }

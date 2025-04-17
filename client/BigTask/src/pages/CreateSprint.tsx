@@ -40,7 +40,7 @@ const CreateSprint: React.FC = () => {
         };
 
         fetchData();
-    }, []);
+    }, [getAccessTokenSilently]);
 
     // Set task data on drag start.
     const handleDragStart = (event: React.DragEvent<HTMLDivElement>, task: BigTask) => {

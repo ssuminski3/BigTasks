@@ -23,7 +23,7 @@ const ShowBigTask = () => {
         }
       }
       fetchData()
-    }, [])
+    }, [getAccessTokenSilently])
 
   // Remove task by key
   const remove = (key: string) => {

@@ -8,14 +8,14 @@ type TimePanelProps = {
 const TimePanel = ({ initialSeconds = 60, onEnd }: TimePanelProps) => {
     const [seconds, setSeconds] = useState(initialSeconds);
     const [isRunning, setIsRunning] = useState(false);
-    const intervalRef = useRef<any>(null);
+    const intervalRef = useRef<number | null>(null);
 
     useEffect(() => {
         // Reset timer if initialSeconds changes
         setSeconds(initialSeconds);
         setIsRunning(false);
-        clearInterval(intervalRef.current);
-        return () => clearInterval(intervalRef.current);
+        clearInterval(intervalRef.current as number);
+        return () => clearInterval(intervalRef.current as number);
     }, [initialSeconds]);
 
     useEffect(() => {
@@ -23,7 +23,7 @@ const TimePanel = ({ initialSeconds = 60, onEnd }: TimePanelProps) => {
             intervalRef.current = setInterval(() => {
                 setSeconds(prev => {
                     if (prev <= 1) {
-                        clearInterval(intervalRef.current);
+                        clearInterval(intervalRef.current as number);
                         if (onEnd) onEnd();  // Call the callback on end
                         return 0;
                     }
@@ -31,7 +31,7 @@ const TimePanel = ({ initialSeconds = 60, onEnd }: TimePanelProps) => {
                 });
             }, 1000); // Faster updates (was 1000ms) for more responsive feel
         }
-        return () => clearInterval(intervalRef.current);
+        return () => clearInterval(intervalRef.current as number);
     }, [isRunning, seconds, onEnd]);
 
     const start = () => {
@@ -40,7 +40,7 @@ const TimePanel = ({ initialSeconds = 60, onEnd }: TimePanelProps) => {
 
     const pause = () => {
         setIsRunning(false);
-        clearInterval(intervalRef.current);
+        clearInterval(intervalRef.current as number);
     };
 
     const formatTime = (totalSeconds: number) => {

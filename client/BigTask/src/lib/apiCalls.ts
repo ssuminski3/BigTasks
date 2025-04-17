@@ -1,23 +1,10 @@
 import axios from "axios";
 import { BigTaskAdd, Sprint } from "./types";
 
-export async function callApi(token: any) {
-    try {
-        const res = await axios.get(import.meta.env.VITE_URL, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        })
-        console.log(res.data)
-    }
-    catch (e) {
-        console.error(e)
-    }
-}
 export async function createBigTask(bigTask: BigTaskAdd, token: string) {
     console.log('bigTask to send:', bigTask);
     try {
-        const response = await axios.post('http://localhost:3000/createbigtask/', bigTask, {
+        const response = await axios.post(import.meta.env.VITE_API_URL+'createbigtask/', bigTask, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -32,7 +19,7 @@ export async function createBigTask(bigTask: BigTaskAdd, token: string) {
 export async function editBigTask(bigTask: BigTaskAdd, token: string, id: string) {
     console.log('bigTask to send:', bigTask);
     try {
-        const response = await axios.put('http://localhost:3000/editbigtask/', {...bigTask, id}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'editbigtask/', {...bigTask, id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -45,7 +32,7 @@ export async function editBigTask(bigTask: BigTaskAdd, token: string, id: string
 
 export async function getBigTask( token: string ) {
     try {
-        const response = await axios.get('http://localhost:3000/bigtasks/', {
+        const response = await axios.get(import.meta.env.VITE_API_URL+'bigtasks/', {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -59,7 +46,7 @@ export async function getBigTask( token: string ) {
 
 export async function getTask( token: string, bigTaskId: string ) {
     try {
-        const response = await axios.get('http://localhost:3000/tasks/', {
+        const response = await axios.get(import.meta.env.VITE_API_URL+'tasks/', {
             params: { bigTaskId },
             headers: {
                 authorization: `Bearer ${token}`
@@ -74,7 +61,7 @@ export async function getTask( token: string, bigTaskId: string ) {
 
 export async function doTask( token: string, id: string){
     try {
-        const response = await axios.put('http://localhost:3000/dotask/', {id}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'dotask/', {id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -87,7 +74,7 @@ export async function doTask( token: string, id: string){
 
 export async function doBigTask( token: string, id: string){
     try {
-        const response = await axios.put('http://localhost:3000/dobigtask/', {id}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'dobigtask/', {id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -100,7 +87,7 @@ export async function doBigTask( token: string, id: string){
 
 export async function doSprint( token: string, id: string){
     try {
-        const response = await axios.put('http://localhost:3000/dosprint/', {id}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'dosprint/', {id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -114,7 +101,7 @@ export async function doSprint( token: string, id: string){
 export async function createSprint(sprint: Sprint, token: string) {
     console.log('sprint to send:', sprint);
     try {
-        const response = await axios.post('http://localhost:3000/createsprint/', sprint, {
+        const response = await axios.post(import.meta.env.VITE_API_URL+'createsprint/', sprint, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -127,7 +114,7 @@ export async function createSprint(sprint: Sprint, token: string) {
 
 export async function getSprints(token: string){
     try {
-        const response = await axios.get('http://localhost:3000/getsprints/', {
+        const response = await axios.get(import.meta.env.VITE_API_URL+'getsprints/', {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -141,7 +128,7 @@ export async function getSprints(token: string){
 
 export async function getSprint( token: string, sprintId: string ) {
     try {
-        const response = await axios.get('http://localhost:3000/getsprint/', {
+        const response = await axios.get(import.meta.env.VITE_API_URL+'getsprint/', {
             params: { sprintId },
             headers: {
                 authorization: `Bearer ${token}`
@@ -157,7 +144,7 @@ export async function getSprint( token: string, sprintId: string ) {
 export async function editSprint(sprint: Sprint, token: string, id: string) {
     console.log('sprint to send:', sprint);
     try {
-        const response = await axios.put('http://localhost:3000/editsprint/', {sprint, id}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'editsprint/', {sprint, id}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -171,7 +158,7 @@ export async function editSprint(sprint: Sprint, token: string, id: string) {
 export async function editTask(taskId: string, name: string, token: string) {
     console.log('task to send:', name);
     try {
-        const response = await axios.put('http://localhost:3000/edittask/', {name, taskId}, {
+        const response = await axios.put(import.meta.env.VITE_API_URL+'edittask/', {name, taskId}, {
             headers: {
                 authorization: `Bearer ${token}`
             }
@@ -185,7 +172,7 @@ export async function editTask(taskId: string, name: string, token: string) {
 
 export async function deleteTask(taskId: string, token: string) {
     try {
-        const response = await axios.delete('http://localhost:3000/deletetask/', {
+        const response = await axios.delete(import.meta.env.VITE_API_URL+'deletetask/', {
             params: { taskId },
             headers: {
                 authorization: `Bearer ${token}`
@@ -202,7 +189,7 @@ export async function deleteTask(taskId: string, token: string) {
 
 export async function deleteSprint(sprintId: string, token: string) {
     try {
-        const response = await axios.delete('http://localhost:3000/deletesprint/', {
+        const response = await axios.delete(import.meta.env.VITE_API_URL+'deletesprint/', {
             params: { sprintId },
             headers: {
                 authorization: `Bearer ${token}`
@@ -217,7 +204,7 @@ export async function deleteSprint(sprintId: string, token: string) {
 
 export async function deleteBigTask(bigTaskId: string, token: string) {
     try {
-        const response = await axios.delete('http://localhost:3000/deletebigtask/', {
+        const response = await axios.delete(import.meta.env.VITE_API_URL+'deletebigtask/', {
             params: { bigTaskId },
             headers: {
                 authorization: `Bearer ${token}`

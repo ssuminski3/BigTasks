@@ -32,7 +32,7 @@ function MainPage() {
     };
   
     fetchData();
-  }, []);
+  }, [getAccessTokenSilently]);
   
 
   // Remove a task based on its key.

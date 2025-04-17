@@ -31,7 +31,7 @@ const CreateBigTask = () => {
       }
     }
     fetchData()
-  }, [])
+  }, [params.id, getAccessTokenSilently])
 
   const handleAddTask = () => {
     const trimmed = inputValue.trim();
@@ -76,7 +76,7 @@ const CreateBigTask = () => {
       alert("You need to name Big Task")
       return
     }
-    let bigTask: BigTaskAdd = {
+    const bigTask: BigTaskAdd = {
       name: editText || '',
       done: false,
       tasks: tasks
