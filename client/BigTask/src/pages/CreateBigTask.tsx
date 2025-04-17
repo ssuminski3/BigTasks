@@ -7,6 +7,7 @@ import { createBigTask, editBigTask } from '../lib/apiCalls';
 import { BigTaskAdd } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getTask } from '../lib/apiCalls';
+import { useNavigate } from "react-router-dom";
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -17,6 +18,7 @@ const CreateBigTask = () => {
   const params = useParams();
   const [editText, setEditText] = useState('');
   const { getAccessTokenSilently } = useAuth0();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -85,6 +87,7 @@ const CreateBigTask = () => {
       return;
     }
     await createBigTask(bigTask, await getAccessTokenSilently())
+    navigate('/dashboard/');
   }
 
   return (

@@ -5,6 +5,7 @@ import { useParams } from 'react-router-dom';
 import { BigTask, Sprint } from '../lib/types';
 import { createSprint, getBigTask, getTask, getSprint, editSprint } from '../lib/apiCalls';
 import { useAuth0 } from '@auth0/auth0-react';
+import { useNavigate } from "react-router-dom";
 
 //When clicked big tasks populate tasks panel with tasks from this bigTask
 //When put big task in sprint get tasks from bigtask and put them in sprint
@@ -19,6 +20,8 @@ const CreateSprint: React.FC = () => {
     const [minuteValue, setMinuteValue] = useState(0);
 
     const { getAccessTokenSilently } = useAuth0();
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -100,6 +103,8 @@ const CreateSprint: React.FC = () => {
                 await editSprint(sprint, await getAccessTokenSilently(), params.id)
             } catch (e) {
                 console.error(e)
+            } finally {
+                navigate('/dashboard/');
             }
             return
         }
@@ -107,6 +112,8 @@ const CreateSprint: React.FC = () => {
             await createSprint(sprint, await getAccessTokenSilently());
         } catch (e) {
             console.log(e)
+        } finally {
+            navigate('/dashboard/');
         }
     }
 
