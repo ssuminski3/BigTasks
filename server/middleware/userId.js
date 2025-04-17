@@ -1,19 +1,19 @@
-const axios = require('axios');
+const jwt = require('jsonwebtoken');
 
-async function getUserSub(req) {
+function getUserSub(req) {
     try {
-        const response = await axios.get(process.env.AUTH0_BASEURL + 'userinfo/', {
-            headers: {
-                authorization: req.headers.authorization
-            }
-        });
-        const userinfo = response.data;
-        return userinfo.sub;
-    } catch (e) {
-        console.error(e);
+        const authHeader = req.headers.authorization;
+        if (!authHeader) return null;
+
+        const token = authHeader.split(' ')[1];  // "Bearer <token>"
+        console.log('Extracted Token:', token);
+
+        const decoded = jwt.decode(token);
+        return decoded?.sub || null;
+    } catch (err) {
+        console.error('Error decoding token:', err);
         return null;
     }
 }
-
 
 module.exports = { getUserSub };

@@ -68,6 +68,17 @@ function MainPage() {
     });
   };
 
+  const toggleUnDone = (key: string) => {
+    setDoneTasks(prevTasks => {
+      const taskToMove = prevTasks.find(task => task.id === key);
+      if (!taskToMove) return prevTasks; // safety check
+      // Move the task to doneTasks with 'done: true'
+      setTasks(prevDone => [...prevDone, { ...taskToMove, done: false }]);
+      console.log("Task marked as done");
+      return prevTasks.filter(task => task.id !== key);
+    });
+  };
+
   return (
     <>
       <div className="h-screen back">
@@ -110,7 +121,7 @@ function MainPage() {
               <p className="font-bold text-3xl m-5">Finished Big Tasks</p>
               <BigTaskList
                 removeBigTaks={removeDoneBigTaks}
-                toggleDone={toggleDone}
+                toggleDone={toggleUnDone}
                 tasks={doneTasks} />
             </div>
 

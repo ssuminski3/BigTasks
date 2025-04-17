@@ -1,5 +1,5 @@
 const { getUserSub } = require('../middleware/userId')
-const { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb, deleteSprintDb } = require('../db/sprintDb')
+const { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb, deleteSprintDb, setSprintDone } = require('../db/sprintDb')
 
 const createSprint = async (req, res) => {
     console.log("Received POST /createsprint", req.body);
@@ -65,4 +65,16 @@ const deleteSprint = async (req, res) => {
     }
 }
 
-module.exports = { createSprint, getSprints, getSprint, editSprint, deleteSprint }
+const doSprint = async (req, res) => {
+    console.log("Received PUT /dosprint", req.body);
+    const userId = await getUserSub(req)
+    try {
+        await setSprintDone(req.body.id, userId);
+        res.status(200).send("Worked");
+    } catch (error) {
+        console.error("Failed to end sprint:", error.message);
+        res.status(500).send("Internal Server Error");
+    }
+};
+
+module.exports = { createSprint, getSprints, getSprint, editSprint, deleteSprint, doSprint }

@@ -1,152 +1,129 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
 
+/**
+ * Inserts a new big task document into the BigTasks collection.
+ * @param {{ name: string, done: boolean, userId: any }} task
+ * @returns {Promise<ObjectId>} The inserted document's ID
+ */
 async function addBigTaskDb(task) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection('BigTasks');
+  const { db } = await connectToDb();
 
-        if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
-            throw new Error('Invalid BigTask object');
-        }
-        console.log("Big task: " + task)
-        const result = await collection.insertOne(task);
-        return result.insertedId;
-    } catch (error) {
-        console.error('Error inserting BigTask:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
+    throw new Error('Invalid BigTask object');
+  }
+
+  const result = await db.collection('BigTasks').insertOne(task);
+  return result.insertedId;
 }
 
-
+/**
+ * Updates an existing big task's name and done status for a user.
+ * @param {string} id
+ * @param {{ name: string, done: boolean }} updatedTask
+ * @param {any} userId
+ * @returns {Promise<number>} Number of modified documents
+ */
 async function editBigTaskDb(id, updatedTask, userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection('BigTasks');
+  const { db } = await connectToDb();
 
-        // Validate the updatedTask object
-        if (typeof updatedTask.name !== 'string' || typeof updatedTask.done !== 'boolean') {
-            throw new Error('Invalid BigTask object');
-        }
+  if (typeof updatedTask.name !== 'string' || typeof updatedTask.done !== 'boolean') {
+    throw new Error('Invalid BigTask object');
+  }
 
-        // Update the task in the database
-        const result = await collection.updateOne(
-            { _id: new ObjectId(id), userId: userId }, // Use ObjectId to find the document
-            { $set: updatedTask } // Update the fields with the new values
-        );
+  const result = await db.collection('BigTasks').updateOne(
+    { _id: new ObjectId(id), userId },
+    { $set: updatedTask }
+  );
 
-        if (result.modifiedCount === 0) {
-            throw new Error('No task found with the given id or no changes made');
-        }
+  if (result.modifiedCount === 0) {
+    throw new Error('No task found with the given id or no changes made');
+  }
 
-        return result.modifiedCount; // Return the number of modified documents
-    } catch (error) {
-        console.error('Error updating BigTask:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  return result.modifiedCount;
 }
 
+/**
+ * Retrieves all big tasks for a given user and aggregates subtask counts.
+ * @param {any} userId
+ * @returns {Promise<Array>} List of tasks with counts
+ */
 async function getBigTasksByUserId(userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collectionBig = db.collection('BigTasks');
-        const collection = db.collection('Tasks')
+  const { db } = await connectToDb();
+  const bigCol = db.collection('BigTasks');
+  const subCol = db.collection('Tasks');
 
-        const tasksFromDb = await collectionBig.find({ userId: userId }, { userId: 0 }).toArray();
-        const tasks = await Promise.all(
-            tasksFromDb.map(async task => {
+  const tasksFromDb = await bigCol
+    .find({ userId }, { projection: { userId: 0 } })
+    .toArray();
 
-                const countCursorFalse = await collection.aggregate([
-                    { $match: { "bigTaskId": new ObjectId(task._id), "done": false } },
-                    { $count: "totalTasks" }
-                ]).toArray();  // <--- .toArray() to actually execute the aggregation!
+  const tasks = await Promise.all(
+    tasksFromDb.map(async task => {
+      const [falseCount] = await subCol.aggregate([
+        { $match: { bigTaskId: new ObjectId(task._id), done: false } },
+        { $count: 'totalTasks' }
+      ]).toArray();
 
-                const countCursorTrue = await collection.aggregate([
-                    { $match: { "bigTaskId": new ObjectId(task._id), "done": true } },
-                    { $count: "totalTasks" }
-                ]).toArray();
+      const [trueCount] = await subCol.aggregate([
+        { $match: { bigTaskId: new ObjectId(task._id), done: true } },
+        { $count: 'totalTasks' }
+      ]).toArray();
 
-                const countDone = countCursorTrue[0]?.totalTasks || 0;
-                const countTotal = (countCursorFalse[0]?.totalTasks || 0) + countDone;
+      const countDone = trueCount?.totalTasks || 0;
+      const countTotal = (falseCount?.totalTasks || 0) + countDone;
 
-                return { ...task, taskToDo: countTotal, donesTasks: countDone, id: task._id };
-            })
-        );
+      return {
+        ...task,
+        taskToDo: countTotal,
+        donesTasks: countDone,
+        id: task._id
+      };
+    })
+  );
 
-        console.log(tasks)
-        return tasks;
-    } catch (error) {
-        console.error('Error fetching tasks for user:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  return tasks;
 }
 
+/**
+ * Deletes a big task by ID for a given user.
+ * @param {string} bigTaskId
+ * @param {any} userId
+ */
 async function deleteBigTaskDb(bigTaskId, userId) {
-    let client;
-    client = await connectToDb();
-    try {
-        const db = client.db("BigTask");
-        const collection = db.collection('BigTasks');
-
-        const result = await collection.deleteOne(
-            { _id: new ObjectId(bigTaskId), userId: userId }
-        );
-
-        return result
-    } catch (error) {
-        console.error('Error deleting BigTask:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  const { db } = await connectToDb();
+  return db.collection('BigTasks').deleteOne({
+    _id: new ObjectId(bigTaskId),
+    userId,
+  });
 }
 
+/**
+ * Toggles the "done" status of a big task for a user.
+ * @param {string} taskId
+ * @param {any} userId
+ */
 async function setBigTaskDone(taskId, userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection("BigTasks");
+  const { db } = await connectToDb();
+  const col = db.collection('BigTasks');
+  const task = await col.findOne({ _id: new ObjectId(taskId), userId });
 
-        const task = await collection.findOne({ _id: new ObjectId(taskId), userId: userId });
+  if (!task) {
+    console.warn('Task not found or unauthorized');
+    return null;
+  }
 
-        if (!task) {
-            console.log("Task not found or unauthorized.");
-            return;
-        }
+  await col.updateOne(
+    { _id: new ObjectId(taskId), userId },
+    { $set: { done: !task.done } }
+  );
 
-        await collection.updateOne(
-            { _id: new ObjectId(taskId), userId: userId },
-            { $set: { done: !task.done } }
-        );
-
-    } catch (e) {
-        console.error(e);
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  return true;
 }
 
-module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb, setBigTaskDone };
+module.exports = {
+  addBigTaskDb,
+  editBigTaskDb,
+  getBigTasksByUserId,
+  deleteBigTaskDb,
+  setBigTaskDone,
+};

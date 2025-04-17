@@ -1,30 +1,27 @@
 const { MongoClient } = require('mongodb');
 
-const uri = "mongodb://127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.4.2";
-let client;
+const MONGO_URI = process.env.MONGO_URI;
+let _client;
+let _db;
 
-// Function to connect to the MongoDB database
+/**
+ * Establishes a singleton MongoClient and returns both client and db instances.
+ * Subsequent calls return the cached instances.
+ */
 async function connectToDb() {
-    if (!client) {
-        client = new MongoClient(uri);
-    }
+  if (_db) {
+    return { client: _client, db: _db };
+  }
 
-    // For MongoDB Node.js Driver v4.x or later, you don't need to check `topology.isConnected()`
-    // The driver handles pooling and reconnection. Just ensure `connect()` is called once.
-    if (!client.topology?.isConnected()) {
-        await client.connect();
-        console.log("Connected to MongoDB");
-    }
-
-    return client;
+  _client = new MongoClient(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+  await _client.connect();
+  _db = _client.db("BigTask");
+  console.log("✅ MongoDB connected");
+  return { client: _client, db: _db };
 }
 
-// Function to close the MongoDB connection
-async function closeDbConnection() {
-    if (client) {
-        await client.close();
-        console.log("MongoDB connection closed");
-    }
-}
+module.exports = { connectToDb };
 
-module.exports = { connectToDb, closeDbConnection };

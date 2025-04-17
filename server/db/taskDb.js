@@ -1,147 +1,89 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
 
+/**
+ * Inserts a new sub-task.
+ * @param {{ name: string, done: boolean, userId: any, bigTaskId: any }} task
+ * @returns {Promise<ObjectId>}
+ */
 async function addTaskToDb(task) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection('Tasks');
-
-        if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
-            throw new Error('Invalid Task object');
-        }
-
-        const result = await collection.insertOne(task);
-        return result.insertedId;
-    } catch (error) {
-        console.error('Error inserting BigTask:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  const { db } = await connectToDb();
+  if (typeof task.name !== 'string' || typeof task.done !== 'boolean') {
+    throw new Error('Invalid Task object');
+  }
+  const result = await db.collection('Tasks').insertOne(task);
+  return result.insertedId;
 }
 
+/**
+ * Toggles a sub-task's done status.
+ */
 async function setTaskDone(taskId, userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection("Tasks");
-
-        const task = await collection.findOne({ _id: new ObjectId(taskId), userId: userId });
-
-        if (!task) {
-            console.log("Task not found or unauthorized.");
-            return;
-        }
-
-        await collection.updateOne(
-            { _id: new ObjectId(taskId), userId: userId },
-            { $set: { done: !task.done } }
-        );
-
-    } catch (e) {
-        console.error(e);
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  const { db } = await connectToDb();
+  const col = db.collection('Tasks');
+  const task = await col.findOne({ _id: new ObjectId(taskId), userId });
+  if (!task) return null;
+  await col.updateOne(
+    { _id: new ObjectId(taskId), userId },
+    { $set: { done: !task.done } }
+  );
+  return true;
 }
 
-
+/**
+ * Fetches all sub-tasks for a big task along with the big task name.
+ */
 async function getTasksDb(bigTaskId, userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection("Tasks");
+  const { db } = await connectToDb();
+  const big = await db
+    .collection('BigTasks')
+    .findOne(
+      { _id: new ObjectId(bigTaskId), userId },
+      { projection: { name: 1 } }
+    );
+  if (!big) return { tasks: [], name: null };
 
-        // Get the name of the big task
-        const bigTask = await db.collection("BigTasks").findOne(
-            { _id: new ObjectId(bigTaskId), userId: userId },
-            { projection: { name: 1 } }
-        );
+  const tasks = await db
+    .collection('Tasks')
+    .find({ bigTaskId: new ObjectId(bigTaskId), userId })
+    .toArray();
 
-        if (!bigTask) {
-            console.log("Big task not found or unauthorized.");
-            return { tasks: [], name: null };
-        }
-
-        // Retrieve the tasks for the given bigTaskId and userId
-        const tasks = await collection.find({ bigTaskId: new ObjectId(bigTaskId), userId: userId }).toArray();
-
-        if (!tasks.length) {
-            console.log("No tasks found for this big task or unauthorized.");
-            return { tasks: [], name: bigTask.name };
-        }
-
-        return { tasks, name: bigTask.name };
-    } catch (e) {
-        console.error(e);
-        return { tasks: [], name: null };
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  return { tasks, name: big.name };
 }
 
+/**
+ * Updates the name of a sub-task.
+ */
 async function editTaskDb(taskId, userId, newName) {
-    let client;
-    if (!newName || typeof newName !== 'string' || !newName.trim()) {
-        throw new Error('Invalid new name: cannot be null, empty, or non-string');
-    }
-
-    client = await connectToDb();
-    try {
-        const db = client.db("BigTask");
-        const collection = db.collection('Tasks');
-
-        const result = await collection.updateOne(
-            { _id: new ObjectId(taskId), userId: userId, name: { $ne: newName } }, // Only update if it's actually different
-            { $set: { name: newName } }
-        );
-
-        if (result.modifiedCount === 0) {
-            throw new Error('No task found with the given id, or the name was already set to this value');
-        }
-
-        return result.modifiedCount;
-    } catch (error) {
-        console.error('Error updating Task:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  if (!newName || typeof newName !== 'string' || !newName.trim()) {
+    throw new Error('Invalid new name');
+  }
+  const { db } = await connectToDb();
+  const result = await db.collection('Tasks').updateOne(
+    { _id: new ObjectId(taskId), userId, name: { $ne: newName } },
+    { $set: { name: newName } }
+  );
+  if (result.modifiedCount === 0) {
+    throw new Error('No task updated or name unchanged');
+  }
+  return result.modifiedCount;
 }
 
+/**
+ * Deletes a sub-task.
+ */
 async function deleteTaskDb(taskId, userId) {
-    let client;
-    try {
-        client = await connectToDb();
-        const db = client.db("BigTask");
-        const collection = db.collection('Tasks');
-
-        const result = await collection.deleteOne(
-            { _id: new ObjectId(taskId), userId: userId }
-        );
-
-        return result
-    } catch (error) {
-        console.error('Error deleting Task:', error);
-        throw error;
-    } finally {
-        if (client) {
-            await client.close();
-        }
-    }
+  const { db } = await connectToDb();
+  return db.collection('Tasks').deleteOne({
+    _id: new ObjectId(taskId),
+    userId,
+  });
 }
 
-
-module.exports = { setTaskDone, getTasksDb, addTaskToDb, editTaskDb, deleteTaskDb }
+module.exports = {
+  addTaskToDb,
+  setTaskDone,
+  getTasksDb,
+  editTaskDb,
+  deleteTaskDb,
+};

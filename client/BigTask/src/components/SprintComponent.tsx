@@ -33,7 +33,7 @@ function SprintComponent(props: Sprint) {
     }
 
     return (
-        <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} onClick={show}>
+        <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} onClick={props.done ? undefined : show}>
             <div className="flex">
                 <div className="w-full flex">
 

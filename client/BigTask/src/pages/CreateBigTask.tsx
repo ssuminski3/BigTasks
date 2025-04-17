@@ -84,6 +84,8 @@ const CreateBigTask = () => {
     console.log("Send")
     if (params.id != undefined) {
       await editBigTask(bigTask, await getAccessTokenSilently(), params.id.toString())
+      console.log("Do dodania: "+bigTask.tasks)
+      navigate('/dashboard/');
       return;
     }
     await createBigTask(bigTask, await getAccessTokenSilently())
