@@ -141,3 +141,18 @@ export async function editSprint(sprint: Sprint, token: string, id: string) {
         console.error('Error sending data:', e);
     }
 }
+
+export async function editTask(taskId: string, name: string, token: string) {
+    console.log('task to send:', name);
+    try {
+        const response = await axios.put('http://localhost:3000/edittask/', {name, taskId}, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+    
+}

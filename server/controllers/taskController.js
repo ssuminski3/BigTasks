@@ -1,5 +1,5 @@
 const { getUserSub } = require('../middleware/userId')
-const { setTaskDone, getTasksDb } = require('../db/taskDb')
+const { setTaskDone, getTasksDb, editTaskDb } = require('../db/taskDb')
 
 const doTask = async (req, res) => {
     console.log("Received PUT /dotask", req.body);
@@ -34,4 +34,15 @@ const getTasks = async (req, res) => {
     }
 };
 
-module.exports = { doTask, getTasks }
+const editTask = async (req, res) => {
+    console.log("Received PUT /tasks", req.body)
+    const userId = await getUserSub(req); // Assuming getUserSub() fetches the user's unique ID from request
+    try{
+        await editTaskDb(req.body.taskId, userId, req.body.name)
+        res.status(200).send("Task edited");
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports = { doTask, getTasks, editTask }

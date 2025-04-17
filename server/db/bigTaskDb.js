@@ -5,7 +5,7 @@ let client;
 
 async function addBigTaskDb(task) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('BigTasks');
 
@@ -18,13 +18,17 @@ async function addBigTaskDb(task) {
     } catch (error) {
         console.error('Error inserting BigTask:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 
 async function editBigTaskDb(id, updatedTask, userId) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('BigTasks');
 
@@ -47,17 +51,21 @@ async function editBigTaskDb(id, updatedTask, userId) {
     } catch (error) {
         console.error('Error updating BigTask:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 async function getBigTasksByUserId(userId) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collectionBig = db.collection('BigTasks');
         const collection = db.collection('Tasks')
 
-        const tasksFromDb = await collectionBig.find({ userId: userId }, { userId: 0}).toArray();
+        const tasksFromDb = await collectionBig.find({ userId: userId }, { userId: 0 }).toArray();
         const tasks = await Promise.all(
             tasksFromDb.map(async task => {
 
@@ -69,7 +77,7 @@ async function getBigTasksByUserId(userId) {
                 const countCursorTrue = await collection.aggregate([
                     { $match: { "bigTaskId": new ObjectId(task._id), "done": true } },
                     { $count: "totalTasks" }
-                ]).toArray(); 
+                ]).toArray();
 
                 const countDone = countCursorTrue[0]?.totalTasks || 0;
                 const countTotal = (countCursorFalse[0]?.totalTasks || 0) + countDone;
@@ -83,6 +91,10 @@ async function getBigTasksByUserId(userId) {
     } catch (error) {
         console.error('Error fetching tasks for user:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 

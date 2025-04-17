@@ -3,7 +3,7 @@ import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
-import { doTask } from "../lib/apiCalls";
+import { doTask, editTask } from "../lib/apiCalls";
 import { Task } from "../lib/types";
 import { useAuth0 } from "@auth0/auth0-react";
 
@@ -70,6 +70,18 @@ function TaskComponent(props: Task) {
     div.current?.classList.add("showup")
     setTimeout(() => div.current?.classList.remove("showup"), 2000)
   }, [])
+
+  const handleEdit = async () => {
+    if (edit) {
+      // we’re currently in “edit” mode, so this click means “submit”
+      const token = await getAccessTokenSilently();
+      await editTask(props.id, name, token);
+    }
+    // toggle into/out of edit mode
+    setEdit(!edit);
+  };
+  
+
   return (
     <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} >
       <div className="flex">
@@ -102,7 +114,7 @@ function TaskComponent(props: Task) {
           )}
 
         </div>
-        <div onClick={(e: React.MouseEvent) => props.edit?.(e) || setEdit(!edit)} className="m-2">
+        <div onClick={(e: React.MouseEvent) => props.edit?.(e) || handleEdit()} className="m-2">
           {edit ?
             <AiOutlineCheck color={props.color || '#29B6F6'} size={'22px'} /> :
             <BiPencil color={props.color || '#29B6F6'} size={'22px'} />

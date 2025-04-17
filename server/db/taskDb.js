@@ -1,9 +1,10 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
+let client
 
 async function addTaskToDb(task) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('Tasks');
 
@@ -16,11 +17,14 @@ async function addTaskToDb(task) {
     } catch (error) {
         console.error('Error inserting BigTask:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 async function setTaskDone(taskId, userId) {
-    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -50,7 +54,7 @@ async function setTaskDone(taskId, userId) {
 
 async function getTasksDb(bigTaskId, userId) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection("Tasks");
 
@@ -77,7 +81,42 @@ async function getTasksDb(bigTaskId, userId) {
     } catch (e) {
         console.error(e);
         return { tasks: [], name: null };
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
-module.exports = { setTaskDone, getTasksDb, addTaskToDb }
+async function editTaskDb(taskId, userId, newName) {
+    if (!newName || typeof newName !== 'string' || !newName.trim()) {
+        throw new Error('Invalid new name: cannot be null, empty, or non-string');
+    }
+
+    client = await connectToDb();
+    try {
+        const db = client.db("BigTask");
+        const collection = db.collection('Tasks');
+
+        const result = await collection.updateOne(
+            { _id: new ObjectId(taskId), userId: userId, name: { $ne: newName } }, // Only update if it's actually different
+            { $set: { name: newName } }
+        );
+
+        if (result.modifiedCount === 0) {
+            throw new Error('No task found with the given id, or the name was already set to this value');
+        }
+
+        return result.modifiedCount;
+    } catch (error) {
+        console.error('Error updating Task:', error);
+        throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
+
+module.exports = { setTaskDone, getTasksDb, addTaskToDb, editTaskDb }

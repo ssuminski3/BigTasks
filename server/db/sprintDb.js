@@ -1,9 +1,11 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
 
+let client
+
 async function addSprintToDb(sprint) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('Sprints');
 
@@ -14,12 +16,16 @@ async function addSprintToDb(sprint) {
     } catch (error) {
         console.error('Error inserting BigTask:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 async function getSprintsDb(userId) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection("Sprints");
 
@@ -29,12 +35,16 @@ async function getSprintsDb(userId) {
     } catch (error) {
         console.error('Error inserting BigTask:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 async function getSprintDb(userId, sprintId) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collectionSprint = db.collection("Sprints");
         const collection = db.collection("Tasks")
@@ -52,12 +62,16 @@ async function getSprintDb(userId, sprintId) {
     } catch (error) {
         console.error('Error gettinh sprint:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
 async function editSprintDb(userId, id, updatedSprint) {
     try {
-        const client = await connectToDb();
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('Sprints');
         console.log("IP", updatedSprint)
@@ -80,6 +94,10 @@ async function editSprintDb(userId, id, updatedSprint) {
     } catch (error) {
         console.error('Error updating Sprint:', error);
         throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
     }
 }
 
