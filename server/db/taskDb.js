@@ -118,5 +118,27 @@ async function editTaskDb(taskId, userId, newName) {
     }
 }
 
+async function deleteTaskDb(taskId, userId) {
 
-module.exports = { setTaskDone, getTasksDb, addTaskToDb, editTaskDb }
+    client = await connectToDb();
+    try {
+        const db = client.db("BigTask");
+        const collection = db.collection('Tasks');
+
+        const result = await collection.deleteOne(
+            { _id: new ObjectId(taskId), userId: userId }
+        );
+
+        return result
+    } catch (error) {
+        console.error('Error updating Task:', error);
+        throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
+
+module.exports = { setTaskDone, getTasksDb, addTaskToDb, editTaskDb, deleteTaskDb }

@@ -6,6 +6,7 @@ import { BiTrash } from "react-icons/bi";
 import { doTask, editTask } from "../lib/apiCalls";
 import { Task } from "../lib/types";
 import { useAuth0 } from "@auth0/auth0-react";
+import { deleteTask } from "../lib/apiCalls";
 
 function TaskComponent(props: Task) {
 
@@ -58,11 +59,12 @@ function TaskComponent(props: Task) {
     }, 10)
   }
 
-  function onDelete(e: React.MouseEvent) {
+  async function onDelete(e: React.MouseEvent) {
     e.stopPropagation()
     if (confirm("Do you want to delete task ?")) {
       div.current?.classList.add("delete")
       setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.id) }, 2000)
+      await deleteTask(props.id, await getAccessTokenSilently())
     }
   }
 

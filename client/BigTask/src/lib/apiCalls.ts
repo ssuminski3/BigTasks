@@ -156,3 +156,18 @@ export async function editTask(taskId: string, name: string, token: string) {
     }
     
 }
+
+export async function deleteTask(taskId: string, token: string) {
+    try {
+        const response = await axios.delete('http://localhost:3000/deletetask/', {
+            params: { taskId },
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+    
+}

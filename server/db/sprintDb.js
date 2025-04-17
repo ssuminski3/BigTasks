@@ -43,24 +43,32 @@ async function getSprintsDb(userId) {
 }
 
 async function getSprintDb(userId, sprintId) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
         const collectionSprint = db.collection("Sprints");
-        const collection = db.collection("Tasks")
+        const collection = db.collection("Tasks");
 
-        const sprint = await collectionSprint.findOne({ userId: userId, _id: new ObjectId(sprintId) }, { userId: 0 })
+        const sprint = await collectionSprint.findOne(
+            { userId: userId, _id: new ObjectId(sprintId) },
+            { projection: { userId: 0 } } // corrected projection syntax
+        );
+
+        if (!sprint) {
+            throw new Error(`Sprint with ID ${sprintId} not found.`);
+        }
 
         const tasks = await Promise.all(
-            sprint.tasks.map(async task => {
-                const result = await collection.findOne({ _id: new ObjectId(task) });
-                return { ...result, id: task };
+            sprint.tasks.map(async taskId => {
+                const task = await collection.findOne({ _id: new ObjectId(taskId) });
+                return task ? { ...task, id: taskId } : null;  // ensure only objects
             })
         );
 
-        return { ...sprint, tasks }
+        return { ...sprint, tasks: tasks.filter(Boolean) }; // filter out any nulls
     } catch (error) {
-        console.error('Error gettinh sprint:', error);
+        console.error('Error getting sprint:', error);
         throw error;
     } finally {
         if (client) {
@@ -68,6 +76,7 @@ async function getSprintDb(userId, sprintId) {
         }
     }
 }
+
 
 async function editSprintDb(userId, id, updatedSprint) {
     try {
