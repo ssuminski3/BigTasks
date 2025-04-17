@@ -51,17 +51,32 @@ async function setTaskDone(taskId, userId) {
 async function getTasksDb(bigTaskId, userId) {
     try {
         const client = await connectToDb();
-        const db = client.db("BigTask")
-        const collection = db.collection("Tasks")
-        const tasks = await collection.find({ bigTaskId: new ObjectId(bigTaskId), userId: userId }).toArray()
-        if (!tasks) {
-            console.log("Task not found or unauthorized.");
-            return;
+        const db = client.db("BigTask");
+        const collection = db.collection("Tasks");
+
+        // Get the name of the big task
+        const bigTask = await db.collection("BigTasks").findOne(
+            { _id: new ObjectId(bigTaskId), userId: userId },
+            { projection: { name: 1 } }
+        );
+
+        if (!bigTask) {
+            console.log("Big task not found or unauthorized.");
+            return { tasks: [], name: null };
         }
-        console.log(tasks)
-        return tasks
+
+        // Retrieve the tasks for the given bigTaskId and userId
+        const tasks = await collection.find({ bigTaskId: new ObjectId(bigTaskId), userId: userId }).toArray();
+
+        if (!tasks.length) {
+            console.log("No tasks found for this big task or unauthorized.");
+            return { tasks: [], name: bigTask.name };
+        }
+
+        return { tasks, name: bigTask.name };
     } catch (e) {
-        console.error(e)
+        console.error(e);
+        return { tasks: [], name: null };
     }
 }
 

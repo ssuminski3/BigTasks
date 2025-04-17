@@ -9,15 +9,16 @@ import { getTask } from '../lib/apiCalls';
 const ShowBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const params = useParams();
-  const [text] = useState(params.id);
+  const [text, setText] = useState('');
   const { getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
       const fetchData = async () => {
         if (params.id != undefined) {
           const token = await getAccessTokenSilently()
-          const tasks = await getTask(token, params.id)
+          const {tasks, name} = await getTask(token, params.id)
           console.log("NICE: "+JSON.stringify(tasks))
+          setText(name)
           setTasks(tasks)
         }
       }

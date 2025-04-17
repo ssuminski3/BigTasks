@@ -15,15 +15,16 @@ const CreateBigTask = () => {
   const [taskMode, setTaskMode] = useState<'single' | 'multiple' | 'loop'>('single');
   const [loopCount, setLoopCount] = useState<number>(1);
   const params = useParams();
-  const [editText, setEditText] = useState(params.id);
+  const [editText, setEditText] = useState('');
   const { getAccessTokenSilently } = useAuth0();
 
   useEffect(() => {
     const fetchData = async () => {
       if (params.id != undefined) {
         const token = await getAccessTokenSilently()
-        const tasks = await getTask(token, params.id)
-        console.log("NICE: "+JSON.stringify(tasks))
+        const {tasks, name} = await getTask(token, params.id)
+        console.log("NICE: "+JSON.stringify(tasks), name)
+        setEditText(name)
         setOldTasks(tasks)
       }
     }
