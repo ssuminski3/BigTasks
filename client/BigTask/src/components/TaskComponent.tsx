@@ -6,7 +6,7 @@ import { BiTrash } from "react-icons/bi";
 import { doTask, editTask } from "../lib/apiCalls";
 import { Task } from "../lib/types";
 import { useAuth0 } from "@auth0/auth0-react";
-import { deleteTask } from "../lib/apiCalls";
+import { deleteTask, deleteBigTask } from "../lib/apiCalls";
 
 function TaskComponent(props: Task) {
 
@@ -16,7 +16,7 @@ function TaskComponent(props: Task) {
   const [edit, setEdit] = useState(false);
   const [name, setName] = useState(props.name)
   const [doneName, setDoneName] = useState(props.name)
-  const { getAccessTokenSilently} = useAuth0();
+  const { getAccessTokenSilently } = useAuth0();
   const div = useRef<HTMLDivElement | null>(null);
   const text = useRef<HTMLLabelElement | null>(null);
 
@@ -62,9 +62,11 @@ function TaskComponent(props: Task) {
   async function onDelete(e: React.MouseEvent) {
     e.stopPropagation()
     if (confirm("Do you want to delete task ?")) {
+      const token = await getAccessTokenSilently()
       div.current?.classList.add("delete")
       setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.id) }, 2000)
-      await deleteTask(props.id, await getAccessTokenSilently())
+
+      props.inputClass ? await deleteBigTask(props.id, token) : await deleteTask(props.id, token)
     }
   }
 
@@ -82,7 +84,7 @@ function TaskComponent(props: Task) {
     // toggle into/out of edit mode
     setEdit(!edit);
   };
-  
+
 
   return (
     <div className='bg-white p-5 shadow-2xl w-full m-auto mb-5' ref={div} >

@@ -166,6 +166,8 @@ export async function deleteTask(taskId: string, token: string) {
             }
         });
         console.log('Response:', response.data);
+        if(response.status === 422)
+            return 422
     } catch (e) {
         console.error('Error sending data:', e);
     }
@@ -176,6 +178,21 @@ export async function deleteSprint(sprintId: string, token: string) {
     try {
         const response = await axios.delete('http://localhost:3000/deletesprint/', {
             params: { sprintId },
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+    
+}
+
+export async function deleteBigTask(bigTaskId: string, token: string) {
+    try {
+        const response = await axios.delete('http://localhost:3000/deletebigtask/', {
+            params: { bigTaskId },
             headers: {
                 authorization: `Bearer ${token}`
             }

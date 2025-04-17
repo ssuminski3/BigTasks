@@ -49,8 +49,11 @@ const deleteTask = async (req, res) => {
     console.log("Received DELETE /tasks", req.query)
     const userId = await getUserSub(req); // Assuming getUserSub() fetches the user's unique ID from request
     try{
-        await deleteTaskDb(req.query.taskId, userId)
-        res.status(200).send("Task deleted");
+        const result = await deleteTaskDb(req.query.taskId, userId)
+        if(result.deletedCount === 0)
+            res.status(422).send("No task.")
+        else
+            res.status(200).send("Task deleted");
     } catch (e) {
         console.error(e)
     }

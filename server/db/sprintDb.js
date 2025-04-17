@@ -1,9 +1,9 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
 
-let client
 
 async function addSprintToDb(sprint) {
+    let client
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -24,6 +24,7 @@ async function addSprintToDb(sprint) {
 }
 
 async function getSprintsDb(userId) {
+    let client
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -43,7 +44,7 @@ async function getSprintsDb(userId) {
 }
 
 async function getSprintDb(userId, sprintId) {
-    let client;
+    let client
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -79,6 +80,7 @@ async function getSprintDb(userId, sprintId) {
 
 
 async function editSprintDb(userId, id, updatedSprint) {
+    let client
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -111,9 +113,9 @@ async function editSprintDb(userId, id, updatedSprint) {
 }
 
 async function deleteSprintDb(sprintId, userId) {
-
-    client = await connectToDb();
+    let client
     try {
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('Sprints');
 

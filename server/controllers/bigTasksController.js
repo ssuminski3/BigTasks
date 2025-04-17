@@ -1,4 +1,4 @@
-const { addBigTaskDb, editBigTaskDb, getBigTasksByUserId } = require('../db/bigTaskDb');
+const { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb } = require('../db/bigTaskDb');
 const { addTaskToDb } = require('../db/taskDb')
 const { getUserSub } = require('../middleware/userId')
 
@@ -40,6 +40,17 @@ const getBigTasks = async (req, res) => {
     }
 }
 
+const deleteBigTask = async (req, res) => {
+    console.log("Received DELETE /deletebigtask", req.query)
+    const userId = await getUserSub(req); // Assuming getUserSub() fetches the user's unique ID from request
+    try{
+        await deleteBigTaskDb(req.query.bigTaskId, userId)
+        res.status(200).send("BigTask deleted");
+    } catch (e) {
+        console.error(e)
+    }
+}
 
 
-module.exports = { createBigTask, editBigTask, getBigTasks };
+
+module.exports = { createBigTask, editBigTask, getBigTasks, deleteBigTask };

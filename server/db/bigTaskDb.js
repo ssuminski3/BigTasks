@@ -1,9 +1,8 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
-let client;
-
 
 async function addBigTaskDb(task) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -27,6 +26,7 @@ async function addBigTaskDb(task) {
 
 
 async function editBigTaskDb(id, updatedTask, userId) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -59,6 +59,7 @@ async function editBigTaskDb(id, updatedTask, userId) {
 }
 
 async function getBigTasksByUserId(userId) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -98,5 +99,27 @@ async function getBigTasksByUserId(userId) {
     }
 }
 
+async function deleteBigTaskDb(bigTaskId, userId) {
+    let client;
+    client = await connectToDb();
+    try {
+        const db = client.db("BigTask");
+        const collection = db.collection('BigTasks');
 
-module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId };
+        const result = await collection.deleteOne(
+            { _id: new ObjectId(bigTaskId), userId: userId }
+        );
+
+        return result
+    } catch (error) {
+        console.error('Error deleting BigTask:', error);
+        throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
+
+module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb };

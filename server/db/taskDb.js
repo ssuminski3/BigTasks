@@ -1,8 +1,8 @@
 const { ObjectId } = require('mongodb');
 const { connectToDb } = require('./connectToDb');
-let client
 
 async function addTaskToDb(task) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -25,6 +25,7 @@ async function addTaskToDb(task) {
 }
 
 async function setTaskDone(taskId, userId) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -53,6 +54,7 @@ async function setTaskDone(taskId, userId) {
 
 
 async function getTasksDb(bigTaskId, userId) {
+    let client;
     try {
         client = await connectToDb();
         const db = client.db("BigTask");
@@ -89,6 +91,7 @@ async function getTasksDb(bigTaskId, userId) {
 }
 
 async function editTaskDb(taskId, userId, newName) {
+    let client;
     if (!newName || typeof newName !== 'string' || !newName.trim()) {
         throw new Error('Invalid new name: cannot be null, empty, or non-string');
     }
@@ -119,9 +122,9 @@ async function editTaskDb(taskId, userId, newName) {
 }
 
 async function deleteTaskDb(taskId, userId) {
-
-    client = await connectToDb();
+    let client;
     try {
+        client = await connectToDb();
         const db = client.db("BigTask");
         const collection = db.collection('Tasks');
 
