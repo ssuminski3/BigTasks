@@ -110,4 +110,26 @@ async function editSprintDb(userId, id, updatedSprint) {
     }
 }
 
-module.exports = { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb }
+async function deleteSprintDb(sprintId, userId) {
+
+    client = await connectToDb();
+    try {
+        const db = client.db("BigTask");
+        const collection = db.collection('Sprints');
+
+        const result = await collection.deleteOne(
+            { _id: new ObjectId(sprintId), userId: userId }
+        );
+
+        return result
+    } catch (error) {
+        console.error('Error deleting Sprint:', error);
+        throw error;
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
+module.exports = { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb, deleteSprintDb }

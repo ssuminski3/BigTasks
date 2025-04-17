@@ -171,3 +171,18 @@ export async function deleteTask(taskId: string, token: string) {
     }
     
 }
+
+export async function deleteSprint(sprintId: string, token: string) {
+    try {
+        const response = await axios.delete('http://localhost:3000/deletesprint/', {
+            params: { sprintId },
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+    
+}

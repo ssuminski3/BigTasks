@@ -1,5 +1,5 @@
 const { getUserSub } = require('../middleware/userId')
-const { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb } = require('../db/sprintDb')
+const { addSprintToDb, getSprintsDb, getSprintDb, editSprintDb, deleteSprintDb } = require('../db/sprintDb')
 
 const createSprint = async (req, res) => {
     console.log("Received POST /createsprint", req.body);
@@ -54,4 +54,15 @@ const editSprint = async (req, res) => {
     }
 }
 
-module.exports = { createSprint, getSprints, getSprint, editSprint }
+const deleteSprint = async (req, res) => {
+    console.log("Received DELETE /deletesprint", req.query)
+    const userId = await getUserSub(req); // Assuming getUserSub() fetches the user's unique ID from request
+    try{
+        await deleteSprintDb(req.query.sprintId, userId)
+        res.status(200).send("Sprint deleted");
+    } catch (e) {
+        console.error(e)
+    }
+}
+
+module.exports = { createSprint, getSprints, getSprint, editSprint, deleteSprint }

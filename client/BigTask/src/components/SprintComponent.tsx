@@ -3,13 +3,16 @@ import { BiPencil } from "react-icons/bi";
 import { BiTrash } from "react-icons/bi";
 import { useNavigate } from 'react-router-dom';
 import { Sprint } from '../lib/types';
-
+import { useAuth0 } from '@auth0/auth0-react';
+import { deleteSprint } from '../lib/apiCalls';
 
 function SprintComponent(props: Sprint) {
 
     const div = useRef<HTMLDivElement | null>(null);
 
     const navigate = useNavigate();
+
+    const { getAccessTokenSilently } = useAuth0();
 
     const edit = (e: React.MouseEvent) => {
         e.stopPropagation()
@@ -20,11 +23,12 @@ function SprintComponent(props: Sprint) {
         navigate(`/showsprint/${props.id}`)
     }
 
-    function onDelete(e: React.MouseEvent) {
+    async function onDelete(e: React.MouseEvent) {
         e.stopPropagation()
         if (confirm("Do you want to delete sprint ?")) {
             div.current?.classList.add("delete")
             setTimeout(() => { div.current?.classList.remove("delete"); props.dl?.(props.id) }, 2000)
+            await deleteSprint(props.id, await getAccessTokenSilently())
         }
     }
 

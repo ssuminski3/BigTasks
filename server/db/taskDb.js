@@ -131,7 +131,7 @@ async function deleteTaskDb(taskId, userId) {
 
         return result
     } catch (error) {
-        console.error('Error updating Task:', error);
+        console.error('Error deleting Task:', error);
         throw error;
     } finally {
         if (client) {
