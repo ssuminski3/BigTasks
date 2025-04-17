@@ -85,6 +85,19 @@ export async function doTask( token: string, id: string){
     }
 }
 
+export async function doBigTask( token: string, id: string){
+    try {
+        const response = await axios.put('http://localhost:3000/dobigtask/', {id}, {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
 export async function createSprint(sprint: Sprint, token: string) {
     console.log('sprint to send:', sprint);
     try {

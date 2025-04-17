@@ -121,5 +121,32 @@ async function deleteBigTaskDb(bigTaskId, userId) {
     }
 }
 
+async function setBigTaskDone(taskId, userId) {
+    let client;
+    try {
+        client = await connectToDb();
+        const db = client.db("BigTask");
+        const collection = db.collection("BigTasks");
 
-module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb };
+        const task = await collection.findOne({ _id: new ObjectId(taskId), userId: userId });
+
+        if (!task) {
+            console.log("Task not found or unauthorized.");
+            return;
+        }
+
+        await collection.updateOne(
+            { _id: new ObjectId(taskId), userId: userId },
+            { $set: { done: !task.done } }
+        );
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        if (client) {
+            await client.close();
+        }
+    }
+}
+
+module.exports = { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb, setBigTaskDone };

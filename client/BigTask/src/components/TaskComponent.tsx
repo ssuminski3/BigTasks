@@ -3,7 +3,7 @@ import "../App.css";
 import { BiPencil } from "react-icons/bi";
 import { AiOutlineCheck } from "react-icons/ai";
 import { BiTrash } from "react-icons/bi";
-import { doTask, editTask } from "../lib/apiCalls";
+import { doTask, editTask, doBigTask } from "../lib/apiCalls";
 import { Task } from "../lib/types";
 import { useAuth0 } from "@auth0/auth0-react";
 import { deleteTask, deleteBigTask } from "../lib/apiCalls";
@@ -37,7 +37,8 @@ function TaskComponent(props: Task) {
       setName('')
       animateTextBack()
     }
-    await doTask(await getAccessTokenSilently(), props.id)
+    const token = await getAccessTokenSilently()
+    props.inputClass ? await doBigTask(token, props.id) : await doTask(token, props.id)
   }
 
   function animateText() {

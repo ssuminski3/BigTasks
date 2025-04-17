@@ -1,4 +1,4 @@
-const { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb } = require('../db/bigTaskDb');
+const { addBigTaskDb, editBigTaskDb, getBigTasksByUserId, deleteBigTaskDb, setBigTaskDone } = require('../db/bigTaskDb');
 const { addTaskToDb } = require('../db/taskDb')
 const { getUserSub } = require('../middleware/userId')
 
@@ -51,6 +51,16 @@ const deleteBigTask = async (req, res) => {
     }
 }
 
+const doBigTask = async (req, res) => {
+    console.log("Received PUT /dobigtask", req.body);
+    const userId = await getUserSub(req)
+    try {
+        await setBigTaskDone(req.body.id, userId);
+        res.status(200).send("Worked");
+    } catch (error) {
+        console.error("Failed to edit task:", error.message);
+        res.status(500).send("Internal Server Error");
+    }
+};
 
-
-module.exports = { createBigTask, editBigTask, getBigTasks, deleteBigTask };
+module.exports = { createBigTask, editBigTask, getBigTasks, deleteBigTask, doBigTask };
