@@ -56,6 +56,12 @@ function MainPage() {
     setSprints(updatedSprints);
     console.log("After removal:", updatedSprints.length);
   }
+  function removeDoneSprint(key: string) {
+    console.log("Before removal (sprints):", doneSprints.length);
+    const updatedSprints = doneSprints.filter(sprint => sprint.id !== key);
+    setDoneSprints(updatedSprints);
+    console.log("After removal:", updatedSprints.length);
+  }
 
   const toggleDone = (key: string) => {
     setTasks(prevTasks => {
@@ -129,7 +135,7 @@ function MainPage() {
               <p className="font-bold text-3xl m-5">Finished Sprints</p>
               <SprintList
                 sprints={doneSprints}
-                removeSprint={removeSprint} />
+                removeSprint={removeDoneSprint} />
             </div>
           </div>
 

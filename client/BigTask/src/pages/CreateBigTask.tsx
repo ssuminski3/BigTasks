@@ -92,6 +92,13 @@ const CreateBigTask = () => {
     navigate('/dashboard/');
   }
 
+  function removeTask(key: string) {
+    console.log("Before removal:", tasks.length);
+    const updatedTasks = tasks.filter(task => task.id !== key);
+    setTasks(updatedTasks);
+    console.log("After removal:", updatedTasks.length);
+  }
+
   return (
     <div className="h-screen back p-4 flex flex-col">
       {/* Top right text edit section */}
@@ -120,7 +127,8 @@ const CreateBigTask = () => {
                 name={task.name}
                 key={task.id}
                 id={task.id}
-                done={task.done} />
+                done={task.done} 
+                dl={removeTask}/>
             ))}
           </ul>
         )}

@@ -56,9 +56,15 @@ function ShowSprint() {
     setTasks((prev) => prev.filter((t) => t.id !== key));
 
   const toggleDone = (key: string) =>
-    setTasks((prev) =>
-      prev.map((t) => (t.id === key ? { ...t, done: !t.done } : t))
-    );
+    setTasks((prev) => {
+      const updated = prev.map((t) =>
+        t.id === key ? { ...t, done: !t.done } : t
+      );
+
+      // Move done tasks to the end
+      return updated.sort((a, b) => Number(a.done) - Number(b.done));
+    });
+
 
   // 5) Timer end callback
   const onEnd = () => {
