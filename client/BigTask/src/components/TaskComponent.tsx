@@ -91,7 +91,7 @@ function TaskComponent(props: Task) {
       <div className="flex">
         <div className="w-full flex">
           <input
-            id={props.id.toString()}
+            id={props.id}
             checked={done}
             onChange={onChecked}
             onClick={(e) => e.stopPropagation()}

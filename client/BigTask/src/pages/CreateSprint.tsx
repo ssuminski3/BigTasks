@@ -56,11 +56,30 @@ const CreateSprint: React.FC = () => {
         console.log(data)
         if (data) {
             const droppedTask: BigTask = JSON.parse(data);
-            const droppedTasks = await getTask(await getAccessTokenSilently(), droppedTask.id)
+            const { tasks: droppedTasks } = await getTask(await getAccessTokenSilently(), droppedTask.id)
             setSprintTasks([...sprintTasks, ...droppedTasks])
             setTasks(tasks.filter(task => task.id != droppedTask.id))
         }
     };
+
+    // When dragging a small Task from SprintTasks
+    const handleTaskDragStart = (event: React.DragEvent<HTMLDivElement>, task: BigTask) => {
+        event.dataTransfer.setData('sprint-task', JSON.stringify(task));
+    };
+
+    // When dropping back to the Tasks panel
+    const handleTaskDrop = (event: React.DragEvent<HTMLDivElement>) => {
+        event.preventDefault();
+        const data = event.dataTransfer.getData('sprint-task');
+        if (data) {
+            const droppedTask: BigTask = JSON.parse(data);
+            // Remove from sprintTasks
+            setSprintTasks(prev => prev.filter(task => task.id !== droppedTask.id));
+            // Optionally: push back to tasks (if you want)
+            //setTasks(prev => [...prev, droppedTask]);
+        }
+    };
+
 
     const handleSave = async () => {
         if (!inputValue) {
@@ -76,13 +95,13 @@ const CreateSprint: React.FC = () => {
             return
         }
         const sprint: Sprint = { tasks: sprintTasks.map(item => item.id), name: inputValue, done: false, id: "", hours: hourValue, minutes: minuteValue }
-        if(params.id != undefined){
-            try{
+        if (params.id != undefined) {
+            try {
                 await editSprint(sprint, await getAccessTokenSilently(), params.id)
-            } catch(e) {
+            } catch (e) {
                 console.error(e)
             }
-            return 
+            return
         }
         try {
             await createSprint(sprint, await getAccessTokenSilently());
@@ -127,14 +146,17 @@ const CreateSprint: React.FC = () => {
             {/* Two side-by-side panels */}
             <div className="flex flex-col md:flex-row gap-4 h-11/12">
                 {/* Left Panel */}
-                <div className="flex-1 bg-white rounded shadow p-4">
+                <div
+                    className="flex-1 bg-white rounded shadow p-4"
+                    onDrop={handleTaskDrop}
+                    onDragOver={handleDragOver}
+                >
                     <h2 className="text-xl font-bold mb-2">Tasks</h2>
                     {tasks.length === 0 ? (
                         <p className="text-gray-500">No tasks added yet.</p>
                     ) : (
                         <>
                             {tasks.map((task) => (
-                                // Wrap each BigTaskComponent in a draggable div.
                                 <div
                                     key={task.id}
                                     draggable
@@ -154,6 +176,7 @@ const CreateSprint: React.FC = () => {
                     )}
                 </div>
 
+
                 {/* Right Panel */}
                 <div
                     className="flex-1 bg-white rounded shadow p-4"
@@ -166,16 +189,23 @@ const CreateSprint: React.FC = () => {
                     ) : (
                         <>
                             {sprintTasks.map((task) => (
-                                <TaskComponent
+                                <div
                                     key={task.id}
-                                    name={task.name}
-                                    id={task.id}
-                                    done={task.done}
-                                />
+                                    draggable
+                                    onDragStart={(e) => handleTaskDragStart(e, task)}
+                                    className="cursor-move"
+                                >
+                                    <TaskComponent
+                                        name={task.name}
+                                        id={task.id}
+                                        done={task.done}
+                                    />
+                                </div>
                             ))}
                         </>
                     )}
                 </div>
+
             </div>
         </div>
     );
