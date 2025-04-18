@@ -8,7 +8,7 @@ const sprintRouter = require('./routes/sprints');
 const app = express();
 
 const corsOptions = {
-    origin: 'https://big-tasks-d7jt.vercel.app/',  // Replace with your front-end URL
+    origin: 'https://big-tasks-d7jt.vercel.app',  // Replace with your front-end URL
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
 };
