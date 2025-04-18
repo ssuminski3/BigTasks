@@ -23,4 +23,4 @@ app.use(notFoundHandler);
 app.use(errorHandler);
 
 // Instead of app.listen(), use this export for Vercel
-module.exports = (req, res) => app(req, res);
+module.exports = app;
