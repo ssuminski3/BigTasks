@@ -7,7 +7,13 @@ const taskRouter = require('./routes/tasks')
 const sprintRouter = require('./routes/sprints')
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+    origin: 'https://big-tasks-d7jt.vercel.app/',  // Replace with your front-end URL
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],  // Add the methods you need
+    credentials: true,  // If you're using cookies, credentials should be enabled
+  };
+
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(jwtCheck);
 app.use(bigTasksRoutes);
