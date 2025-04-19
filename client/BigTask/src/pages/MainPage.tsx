@@ -92,7 +92,7 @@ function MainPage() {
         <div className='md:flex h-[calc(100vh-80px)]'>
 
           {/* Left Sidebar - Big Tasks */}
-          <div style={{ backgroundColor: '#EBF0F7' }} className="md:m-5 md:p-5 md:w-1/4 flex-none">
+          <div style={{ backgroundColor: '#EBF0F7' }} className="m-5 p-5 md:w-1/4 flex-none">
             <div className='flex w-full'>
               <p className="font-bold text-3xl w-full m-5">Big Tasks</p>
               <Link to={"/createbigtask/"} className='items-end m-5'>
@@ -122,7 +122,7 @@ function MainPage() {
           </div>
 
           {/* Right Sidebar - Finished Tasks */}
-          <div className="m-5 w-1/4 flex flex-col flex-none h-[calc(100vh-120px)] space-y-5">
+          <div className="m-5 md:w-1/4 flex flex-col flex-none h-[calc(100vh-120px)] space-y-5">
             <div style={{ backgroundColor: '#EBF0F7' }} className="p-5 flex-1 overflow-hidden">
               <p className="font-bold text-3xl m-5">Finished Big Tasks</p>
               <BigTaskList
