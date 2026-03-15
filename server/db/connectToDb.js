@@ -18,7 +18,7 @@ async function connectToDb() {
     useUnifiedTopology: true,
   });
   await _client.connect();
-  _db = _client.db("BigTask");
+  _db = _client.db("bigtask");
   console.log("✅ MongoDB connected");
   return { client: _client, db: _db };
 }

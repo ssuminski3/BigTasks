@@ -7,7 +7,7 @@ const createBigTask = async (req, res) => {
     console.log("Received POST /createbigtask", req.body);
     try {
         const userId = await getUserSub(req)
-        const id = await addBigTaskDb({ name: req.body.name, done: req.body.done, userId: userId });
+        const id = await addBigTaskDb({ name: req.body.name, done: req.body.done, userId: userId, parent: req.body.parent });
         req.body.tasks.forEach(async task =>
             await addTaskToDb({ name: task.name, done: task.done, bigTaskId: id, userId: userId })
         );

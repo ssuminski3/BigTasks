@@ -16,6 +16,7 @@ export type BigTask = {
     id: string;
     donesTasks: number;
     taskToDo: number;
+    parent?: string | null
     dl?: (index: string) => void,
     dof?: (index: string) => void,
 };
@@ -50,5 +51,6 @@ export type TaskListType = {
 export type BigTaskAdd = {
     name: string,
     done: boolean,
-    tasks: Task[]
+    tasks: Task[],
+    parent?: string | null,
 }

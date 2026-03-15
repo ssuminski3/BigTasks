@@ -1,13 +1,14 @@
 import { useEffect, useState } from 'react';
 import "../App.css"
 import TaskComponent from '../components/TaskComponent';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { Task } from '../lib/types';
 import { createBigTask, editBigTask } from '../lib/apiCalls';
 import { BigTaskAdd } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getTask } from '../lib/apiCalls';
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -16,6 +17,8 @@ const CreateBigTask = () => {
   const [taskMode, setTaskMode] = useState<'single' | 'multiple' | 'loop'>('single');
   const [loopCount, setLoopCount] = useState<number>(1);
   const params = useParams();
+  const [searchParams] = useSearchParams();
+  const parent = searchParams.get("parent")
   const [editText, setEditText] = useState('');
   const { getAccessTokenSilently } = useAuth0();
   const navigate = useNavigate();
@@ -24,8 +27,8 @@ const CreateBigTask = () => {
     const fetchData = async () => {
       if (params.id != undefined) {
         const token = await getAccessTokenSilently()
-        const {tasks, name} = await getTask(token, params.id)
-        console.log("NICE: "+JSON.stringify(tasks), name)
+        const { tasks, name } = await getTask(token, params.id)
+        console.log("NICE: " + JSON.stringify(tasks), name)
         setEditText(name)
         setOldTasks(tasks)
       }
@@ -79,12 +82,13 @@ const CreateBigTask = () => {
     const bigTask: BigTaskAdd = {
       name: editText || '',
       done: false,
-      tasks: tasks
+      tasks: tasks,
+      parent: parent
     }
     console.log("Send")
     if (params.id != undefined) {
       await editBigTask(bigTask, await getAccessTokenSilently(), params.id.toString())
-      console.log("Do dodania: "+bigTask.tasks)
+      console.log("Do dodania: " + bigTask.tasks)
       navigate('/dashboard/');
       return;
     }
@@ -127,8 +131,8 @@ const CreateBigTask = () => {
                 name={task.name}
                 key={task.id}
                 id={task.id}
-                done={task.done} 
-                dl={removeTask}/>
+                done={task.done}
+                dl={removeTask} />
             ))}
           </ul>
         )}
@@ -209,6 +213,9 @@ const CreateBigTask = () => {
         >
           Add Task
         </button>
+        {params.id ? <a href={"/createbigtask?parent="+params.id} className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded ml-2">
+          Add Big Task
+        </a> : <></>}
       </div>
     </div>
   );

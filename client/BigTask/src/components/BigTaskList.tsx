@@ -10,7 +10,7 @@ function BigTaskList(props: BigTaskListType) {
                 <p className="text-gray-500">No big tasks yet. Add one to get started!</p>
             ) : (
                 props.tasks.map((task: BigTask) => (
-                    <BigTaskComponent
+                    !(task.parent) ? <BigTaskComponent
                         key={task.id}
                         name={task.name}
                         done={task.done}
@@ -19,7 +19,7 @@ function BigTaskList(props: BigTaskListType) {
                         id={task.id}
                         dl={props.removeBigTaks}
                         dof={props.toggleDone}
-                    />
+                    /> : <></>
                 ))
             )}
         </div>
