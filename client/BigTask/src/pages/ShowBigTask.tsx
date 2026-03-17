@@ -73,7 +73,7 @@ const ShowBigTask = () => {
       {/* Tasks list display */}
       <div style={{ backgroundColor: '#EBF0F7' }} className="flex-grow rounded shadow p-4 overflow-auto">
         <h2 className="text-xl font-bold mb-2">Tasks</h2>
-        <div className="md:w-4/5 m-auto h-2/3 p-5 overflow-y-scroll" style={{ backgroundColor: '#EBF0F7' }}>
+        <div className="md:w-4/5 m-auto h-11/12 p-5 overflow-y-scroll" style={{ backgroundColor: '#EBF0F7' }}>
           <BigTaskList removeBigTaks={removeBigTaks} toggleDone={toggleBigTaskDone} tasks={bigtasks} />
           <TaskList remove={remove} toggleDone={toggleDone} tasks={tasks} />
         </div>
