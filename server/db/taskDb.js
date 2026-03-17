@@ -46,6 +46,7 @@ async function getTasksDb(bigTaskId, userId) {
   const tasks = await db
     .collection('Tasks')
     .find({ bigTaskId: new ObjectId(bigTaskId), userId })
+    .sort({ _id: 1 })
     .toArray();
 
   return { tasks, name: big.name };
