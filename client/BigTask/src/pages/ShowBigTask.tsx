@@ -1,29 +1,34 @@
 import { useState, useEffect } from 'react';
 import "../App.css"
 import TaskList from '../components/TaskList';
+import BigTaskList from '../components/BigTaskList';
 import { useParams } from 'react-router-dom';
-import { Task } from '../lib/types';
+import { Task, BigTask } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
-import { getTask } from '../lib/apiCalls';
+import { getTask, getChildrenBigTask } from '../lib/apiCalls';
 
 const ShowBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [bigtasks, setBigTasks] = useState<BigTask[]>([]);
   const params = useParams();
   const [text, setText] = useState('');
   const { getAccessTokenSilently } = useAuth0()
 
   useEffect(() => {
-      const fetchData = async () => {
-        if (params.id != undefined) {
-          const token = await getAccessTokenSilently()
-          const {tasks, name} = await getTask(token, params.id)
-          console.log("NICE: "+JSON.stringify(tasks))
-          setText(name)
-          setTasks(tasks)
-        }
+    const fetchData = async () => {
+      if (params.id != undefined) {
+        const token = await getAccessTokenSilently()
+        const { tasks, name } = await getTask(token, params.id)
+        const bigtask = await getChildrenBigTask(token, params.id)
+
+        console.log("NICE: " + JSON.stringify(tasks))
+        setText(name)
+        setBigTasks(bigtask)
+        setTasks(tasks)
       }
-      fetchData()
-    }, [getAccessTokenSilently])
+    }
+    fetchData()
+  }, [getAccessTokenSilently])
 
   // Remove task by key
   const remove = (key: string) => {
@@ -39,6 +44,23 @@ const ShowBigTask = () => {
     );
   };
 
+  function removeBigTaks(key: string) {
+    console.log("Before removal:", bigtasks.length);
+    const updatedTasks = bigtasks.filter(task => task.id !== key);
+    setBigTasks(updatedTasks);
+    console.log("After removal:", updatedTasks.length);
+  }
+
+  const toggleBigTaskDone = (key: string) => {
+    setTasks(prevTasks => {
+      const taskToMove = prevTasks.find(task => task.id === key);
+      if (!taskToMove) return prevTasks; // safety check
+      // Move the task to doneTasks with 'done: true'
+      console.log("Task marked as done");
+      return prevTasks.filter(task => task.id !== key);
+    });
+  };
+
   return (
     <div className="h-screen back p-4 flex flex-col">
       {/* Top right text edit section */}
@@ -51,7 +73,10 @@ const ShowBigTask = () => {
       {/* Tasks list display */}
       <div style={{ backgroundColor: '#EBF0F7' }} className="flex-grow rounded shadow p-4 overflow-auto">
         <h2 className="text-xl font-bold mb-2">Tasks</h2>
-        <TaskList remove={remove} toggleDone={toggleDone} tasks={tasks} />
+        <div className="md:w-4/5 m-auto h-2/3 p-5 overflow-y-scroll" style={{ backgroundColor: '#EBF0F7' }}>
+          <BigTaskList removeBigTaks={removeBigTaks} toggleDone={toggleBigTaskDone} tasks={bigtasks} />
+          <TaskList remove={remove} toggleDone={toggleDone} tasks={tasks} />
+        </div>
       </div>
     </div>
   );

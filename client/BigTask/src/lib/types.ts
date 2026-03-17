@@ -34,7 +34,7 @@ export type Sprint = {
 export type BigTaskListType = {
     removeBigTaks: (index: string) => void,
     toggleDone: (index: string) => void,
-    tasks: BigTask[]
+    tasks: BigTask[];
 }
 
 export type SprintListType = {

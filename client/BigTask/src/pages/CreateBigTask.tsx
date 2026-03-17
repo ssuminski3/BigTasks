@@ -1,17 +1,18 @@
 import { useEffect, useState } from 'react';
 import "../App.css"
-import TaskComponent from '../components/TaskComponent';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { Task } from '../lib/types';
-import { createBigTask, editBigTask } from '../lib/apiCalls';
+import { Task, BigTask } from '../lib/types';
+import { createBigTask, editBigTask, getChildrenBigTask } from '../lib/apiCalls';
 import { BigTaskAdd } from '../lib/types';
 import { useAuth0 } from '@auth0/auth0-react';
 import { getTask } from '../lib/apiCalls';
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
+import TaskList from '../components/TaskList';
+import BigTaskList from '../components/BigTaskList';
 
 const CreateBigTask = () => {
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [bigtasks, setBigTasks] = useState<BigTask[]>([]);
   const [oldTasks, setOldTasks] = useState<Task[]>([])
   const [inputValue, setInputValue] = useState('');
   const [taskMode, setTaskMode] = useState<'single' | 'multiple' | 'loop'>('single');
@@ -24,13 +25,17 @@ const CreateBigTask = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    console.log(params.id)
     const fetchData = async () => {
       if (params.id != undefined) {
         const token = await getAccessTokenSilently()
         const { tasks, name } = await getTask(token, params.id)
+        const bigtask = await getChildrenBigTask(token, params.id)
         console.log("NICE: " + JSON.stringify(tasks), name)
         setEditText(name)
         setOldTasks(tasks)
+        setBigTasks(bigtask)
+        console.log(bigtask)
       }
     }
     fetchData()
@@ -103,6 +108,14 @@ const CreateBigTask = () => {
     console.log("After removal:", updatedTasks.length);
   }
 
+  function removeBigTaks(key: string) {
+    console.log("Before removal:", bigtasks.length);
+    const updatedTasks = bigtasks.filter(task => task.id !== key);
+    setBigTasks(updatedTasks);
+    console.log("After removal:", updatedTasks.length);
+  }
+
+
   return (
     <div className="h-screen back p-4 flex flex-col">
       {/* Top right text edit section */}
@@ -118,26 +131,11 @@ const CreateBigTask = () => {
           Save
         </button>
       </div>
-
       {/* Tasks list display */}
       <div className="flex-grow bg-white rounded shadow p-4 overflow-auto">
-        <h2 className="text-xl font-bold mb-2">Tasks</h2>
-        {tasks.length === 0 && oldTasks.length === 0 ? (
-          <p className="text-gray-500">No tasks added.</p>
-        ) : (
-          <ul>
-            {[...tasks, ...oldTasks].map((task) => (
-              <TaskComponent
-                name={task.name}
-                key={task.id}
-                id={task.id}
-                done={task.done}
-                dl={removeTask} />
-            ))}
-          </ul>
-        )}
+        <BigTaskList removeBigTaks={removeBigTaks} toggleDone={() => { return }} tasks={bigtasks} />
+        <TaskList tasks={[...tasks, ...oldTasks]} remove={removeTask} toggleDone={() => { return }} />
       </div>
-
       {/* Bottom input area for task adding */}
       <div className="mt-4 bg-white rounded shadow p-4">
         <h3 className="text-lg font-semibold mb-2">Add Task</h3>
@@ -213,7 +211,7 @@ const CreateBigTask = () => {
         >
           Add Task
         </button>
-        {params.id ? <a href={"/createbigtask?parent="+params.id} className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded ml-2">
+        {params.id ? <a href={"/createbigtask?parent=" + params.id} className="bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 rounded ml-2">
           Add Big Task
         </a> : <></>}
       </div>

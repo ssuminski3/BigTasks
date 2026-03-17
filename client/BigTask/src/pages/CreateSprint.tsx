@@ -186,7 +186,7 @@ const CreateSprint: React.FC = () => {
 
                 {/* Right Panel */}
                 <div
-                    className="flex-1 bg-white rounded shadow p-4"
+                    className="flex-1 bg-white rounded shadow p-4 overflow-y-scroll"
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                 >
