@@ -84,6 +84,42 @@ async function getBigTasksByUserId(userId) {
   return tasks;
 }
 
+async function getAllBigTasksByUserId(userId) {
+  const { db } = await connectToDb();
+  const bigCol = db.collection('BigTasks');
+  const subCol = db.collection('Tasks');
+
+  const tasksFromDb = await bigCol
+    .find({ userId }, { projection: { userId: 0 } })
+    .toArray();
+
+  const tasks = await Promise.all(
+    tasksFromDb.map(async task => {
+      const [falseCount] = await subCol.aggregate([
+        { $match: { bigTaskId: new ObjectId(task._id), done: false } },
+        { $count: 'totalTasks' }
+      ]).toArray();
+
+      const [trueCount] = await subCol.aggregate([
+        { $match: { bigTaskId: new ObjectId(task._id), done: true } },
+        { $count: 'totalTasks' }
+      ]).toArray();
+
+      const countDone = trueCount?.totalTasks || 0;
+      const countTotal = (falseCount?.totalTasks || 0) + countDone;
+
+      return {
+        ...task,
+        taskToDo: countTotal,
+        donesTasks: countDone,
+        id: task._id
+      };
+    })
+  );
+
+  return tasks;
+}
+
 async function getChildrenBigTasksByUserId(userId, parentId) {
   const { db } = await connectToDb();
   const bigCol = db.collection('BigTasks');
@@ -163,4 +199,5 @@ module.exports = {
   deleteBigTaskDb,
   setBigTaskDone,
   getChildrenBigTasksByUserId,
+  getAllBigTasksByUserId,
 };

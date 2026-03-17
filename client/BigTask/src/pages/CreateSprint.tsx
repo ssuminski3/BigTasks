@@ -3,7 +3,7 @@ import BigTaskComponent from '../components/BigTaskComponent';
 import TaskComponent from '../components/TaskComponent';
 import { useParams } from 'react-router-dom';
 import { BigTask, Sprint } from '../lib/types';
-import { createSprint, getBigTask, getTask, getSprint, editSprint } from '../lib/apiCalls';
+import { createSprint, getAllBigTask, getTask, getSprint, editSprint } from '../lib/apiCalls';
 import { useAuth0 } from '@auth0/auth0-react';
 import { useNavigate } from "react-router-dom";
 
@@ -26,7 +26,7 @@ const CreateSprint: React.FC = () => {
     useEffect(() => {
         const fetchData = async () => {
             const token = await getAccessTokenSilently();
-            const initialBigTasks = await getBigTask(token);
+            const initialBigTasks = await getAllBigTask(token);
             setTasks(initialBigTasks.filter((e: BigTask) => e.done === false))
 
             if (params.id != undefined) {

@@ -74,6 +74,20 @@ export async function getChildrenBigTask(token: string, parentId: string | null)
     }
 }
 
+export async function getAllBigTask(token: string) {
+    try {
+        const response = await axios.get(import.meta.env.VITE_API_URL + 'allbigtask/', {
+            headers: {
+                authorization: `Bearer ${token}`
+            }
+        });
+        console.log('Response:', response.data);
+        return response.data
+    } catch (e) {
+        console.error('Error sending data:', e);
+    }
+}
+
 export async function doTask(token: string, id: string) {
     try {
         const response = await axios.put(import.meta.env.VITE_API_URL + 'dotask/', { id }, {
